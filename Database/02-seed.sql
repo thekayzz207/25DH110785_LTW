@@ -1,16 +1,8 @@
-﻿/*
- Dữ liệu minh họa; giá/thông số dùng để học, không phải báo giá kinh doanh.
- Chạy SAU 01-setup.sql. Chạy lại chỉ bổ sung bản ghi chưa có; không đặt lại mật
- khẩu, không khôi phục tồn kho, không sửa/xóa sản phẩm đã tồn tại cùng tên.
- Tài khoản demo công khai chỉ dành cho môi trường học tập cục bộ.
-*/
-USE [TechPartsStore];
+﻿USE [TechPartsStore];
 GO
 SET XACT_ABORT ON;
 BEGIN TRANSACTION;
 
--- PBKDF2-HMAC-SHA256, 100000 vòng, salt 16 byte, kết quả 32 byte; UTF-8.
--- Định dạng: PBKDF2$100000$base64salt$base64hash.
 IF NOT EXISTS (SELECT 1 FROM [dbo].[User] WHERE [Username] = N'admin')
     INSERT INTO [dbo].[User] ([Username], [Password], [UserRole]) VALUES
     (N'admin', N'PBKDF2$100000$Dcc7D7FL5t0IT88OTNx8rQ==$VamyDeIA6tWJ+03crRKmE+HBVW7iF0Nzoz3wgyhp3BE=', N'A');

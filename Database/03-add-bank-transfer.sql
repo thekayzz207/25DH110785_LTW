@@ -1,5 +1,4 @@
-﻿/* Thêm phương thức thanh toán; giữ nguyên dữ liệu và trạng thái thanh toán cũ.
-   Chạy trên TechPartsStore hiện có. Đơn cũ được gán COD; có thể chạy lại. */
+﻿
 USE [TechPartsStore];
 GO
 SET XACT_ABORT ON;

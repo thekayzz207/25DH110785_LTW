@@ -1,10 +1,4 @@
-﻿/*
- AnhKhoaStore — cấu trúc cơ sở dữ liệu.
- Chạy bằng SSMS hoặc SQL Server Object Explorer trên SQL Server / LocalDB.
- Dành cho CSDL học tập mới; chạy lại không DROP bảng hay ghi đè dữ liệu.
- Không chạy file database2024 gốc chồng lên script này. Không áp dụng trực tiếp
- vào CSDL production hoặc một CSDL TechPartsStore có cấu trúc khác.
-*/
+﻿
 USE [master];
 GO
 IF DB_ID(N'TechPartsStore') IS NULL
@@ -60,7 +54,7 @@ BEGIN
         [ProductID] INT IDENTITY(1,1) NOT NULL,
         [CategoryID] INT NOT NULL,
         [ProductName] NVARCHAR(200) NOT NULL,
-        -- Giữ nguyên tên cột viết thiếu chữ s để đối chiếu tài liệu gốc.
+
         [ProductDecription] NVARCHAR(MAX) NOT NULL,
         [ProductPrice] DECIMAL(18,2) NOT NULL,
         [ProductImage] NVARCHAR(255) NULL,
@@ -86,7 +80,7 @@ BEGIN
     CREATE TABLE [dbo].[Order] (
         [OrderID] INT IDENTITY(1,1) NOT NULL,
         [CustomerID] INT NOT NULL,
-        -- Ứng dụng ghi DateTime.UtcNow. UTC tránh phụ thuộc múi giờ server.
+
         [OrderDate] DATETIME2 NOT NULL CONSTRAINT [DF_Order_Date] DEFAULT (SYSUTCDATETIME()),
         [TotalAmount] DECIMAL(18,2) NOT NULL,
         [PaymentStatus] NVARCHAR(20) NOT NULL CONSTRAINT [DF_Order_Payment] DEFAULT (N'Unpaid'),
@@ -126,7 +120,7 @@ BEGIN
 END;
 GO
 
--- Kiểm tra cấu trúc nền tảng; script này không tự nâng cấp DB có sẵn khác phiên bản.
+
 IF COL_LENGTH(N'dbo.Product', N'DeviceType') IS NULL
     OR COL_LENGTH(N'dbo.Product', N'StockQuantity') IS NULL
     OR COL_LENGTH(N'dbo.Product', N'RowVersion') IS NULL

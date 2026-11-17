@@ -24,6 +24,7 @@
     <link href="@Url.Content("~/Content/cart-toast.css")"
           rel="stylesheet" />
     <link href="@Url.Content("~/Content/cart-quantity.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/account-menu.css")" rel="stylesheet" />
 </head>
 <body>
     <a class="skip-link" href="#main-content">Chuyển đến nội dung</a>
@@ -33,14 +34,7 @@
             <a class="brand" href="@Url.Action("Index", "Home", new { area = "" })" aria-label="AnhKhoaStore - Trang chủ"><img class="brand-logo" src="@Url.Content("~/Content/images/logo-k.svg")" alt="" width="42" height="42" /><span>AnhKhoaStore<small>LINH KIỆN MÁY TÍNH</small></span></a>
             <form class="header-search" action="@Url.Action("Index", "Home", new { area = "" })" method="get" role="search"><label class="sr-only" for="site-search">Tìm kiếm linh kiện</label><span aria-hidden="true">⌕</span><input id="site-search" name="q" type="search" value="@Request.QueryString["q"]" placeholder="Bạn đang tìm linh kiện gì?" /><button type="submit">Tìm kiếm</button></form>
             <div class="header-actions">
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <a class="account-link" href="@(User.IsInRole("A") ? Url.Action("Index", "Home", new { area = "Admin" }) : Url.Action("Profile", "Account", new { area = "" }))"><span class="action-icon" aria-hidden="true">◎</span><span>Tài khoản<small>@User.Identity.Name</small></span></a>
-                }
-                else
-                {
-                    <a class="account-link" href="@Url.Action("Login", "Account", new { area = "" })"><span class="action-icon" aria-hidden="true">◎</span><span>Tài khoản<small>Đăng nhập / Đăng ký</small></span></a>
-                }
+                @Html.Partial("_AccountMenu")
                 <a class="cart-link" href="@Url.Action("Index", "Cart", new { area = "" })"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2 12h12l2-8H6M9 21h.01M18 21h.01" /></svg><span class="cart-label">Giỏ hàng</span><b>@count</b></a>
                 <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="main-navigation" aria-label="Mở menu">☰</button>
             </div>
@@ -69,5 +63,6 @@
     @RenderSection("scripts", required: false)
     <script src="@Url.Content("~/Content/cart-toast.js")" defer></script>
     <script src="@Url.Content("~/Content/cart-quantity.js")" defer></script>
+    <script src="@Url.Content("~/Content/account-menu.js")" defer></script>
 </body>
 </html>

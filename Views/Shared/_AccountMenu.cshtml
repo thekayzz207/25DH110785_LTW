@@ -1,0 +1,32 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    <details class="account-menu" data-account-menu>
+        <summary class="account-link account-menu__toggle" aria-label="@("Menu tài khoản " + User.Identity.Name)">
+            <span class="action-icon" aria-hidden="true">◎</span>
+            <span class="account-menu__identity">Tài khoản<small>@User.Identity.Name</small></span>
+            <svg class="account-menu__chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </summary>
+        <div class="account-menu__panel">
+            <nav aria-label="Menu tài khoản">
+                @if (User.IsInRole("A"))
+                {
+                    <a class="account-menu__item" href="@Url.Action("Index", "Home", new { area = "Admin" })">Bảng quản trị</a>
+                }
+                else
+                {
+                    <a class="account-menu__item" href="@Url.Action("Profile", "Account", new { area = "" })">Thông tin cá nhân</a>
+                    <a class="account-menu__item" href="@Url.Action("History", "Order", new { area = "" })">Đơn hàng của tôi</a>
+                }
+                @using (Html.BeginForm("Logout", "Account", new { area = "" }, FormMethod.Post, new { @class = "account-menu__logout" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button class="account-menu__item" type="submit">Đăng xuất</button>
+                }
+            </nav>
+        </div>
+    </details>
+}
+else
+{
+    <a class="account-link" href="@Url.Action("Login", "Account", new { area = "" })"><span class="action-icon" aria-hidden="true">◎</span><span>Tài khoản<small>Đăng nhập / Đăng ký</small></span></a>
+}

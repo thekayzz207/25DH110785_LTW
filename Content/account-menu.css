@@ -1,0 +1,92 @@
+.account-menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.account-menu[open] {
+  z-index: 100;
+}
+
+.account-menu__toggle {
+  list-style: none;
+  cursor: pointer;
+  border-radius: 6px;
+  user-select: none;
+}
+
+.account-menu__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.account-menu__toggle::marker {
+  content: "";
+}
+
+.account-menu__chevron {
+  flex: 0 0 14px;
+  margin-left: 2px;
+  color: #697463;
+}
+
+.account-menu[open] .account-menu__chevron {
+  transform: rotate(180deg);
+}
+
+.account-menu__panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 238px;
+  max-width: calc(100vw - 32px);
+  padding: 7px;
+  border: 1px solid #dfe5d7;
+  border-radius: 8px;
+  background: #fff;
+  color: #242a20;
+  box-shadow: 0 8px 28px rgba(32, 40, 25, 0.14);
+}
+
+.account-menu:not([open]) > .account-menu__panel {
+  display: none;
+}
+
+.account-menu .account-menu__item {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+  font:
+    400 16px/1.4 Arial,
+    sans-serif;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.account-menu__item:hover,
+.account-menu__item:focus-visible {
+  background: #eff6e3;
+}
+
+.account-menu__logout {
+  margin: 5px 0 0;
+  padding-top: 5px;
+  border-top: 1px solid #e5e9df;
+}
+
+.account-menu__toggle:focus-visible,
+.account-menu__item:focus-visible {
+  outline: 2px solid #7d9d46;
+  outline-offset: 2px;
+}
+
+@media (max-width: 620px) {
+  .account-menu__chevron {
+    display: none;
+  }
+}

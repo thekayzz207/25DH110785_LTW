@@ -1,0 +1,59 @@
+﻿@model List<LTW_25DH110785.Models.Order>
+@using System.Globalization
+@{ ViewBag.Title = "Lịch sử mua hàng"; }
+<div class="container page-space">
+    <div class="page-heading"><span class="eyebrow">TÀI KHOẢN ANHKHOASTORE</span><h1>Đơn hàng của bạn<span>.</span></h1><p>Theo dõi các đơn hàng và xem lại những linh kiện đã mua.</p></div>
+    <nav class="account-tabs"><a href="@Url.Action("Profile", "Account")">Hồ sơ</a><a href="@Url.Action("ChangePassword", "Account")">Đổi mật khẩu</a><a class="active" href="@Url.Action("History")">Đơn hàng</a></nav>
+    @if (Model.Count == 0)
+    {
+        <div class="empty-state panel"><span class="empty-icon">▤</span><h2>Bạn chưa có đơn hàng nào</h2><p>Những linh kiện cho bản nâng cấp tiếp theo đang chờ bạn.</p><a class="button primary" href="@Url.Action("Index", "Home")">Khám phá linh kiện ↗</a></div>
+    }
+    else
+    {
+        <div class="table-wrap panel"><table class="data-table"><thead><tr><th>Mã đơn</th><th>Ngày đặt</th><th>Tổng tiền</th><th>Trạng thái</th><th>Phương thức / Thanh toán</th><th>Thao tác</th></tr></thead><tbody>
+            @foreach (var order in Model)
+            {
+                var canCancel = LTW_25DH110785.Services.PaymentRules.CanCustomerCancel(order);
+                var cancelConfirmText = "Bạn có chắc muốn hủy đơn NX-" + order.OrderID.ToString("D6") + "?";
+                if (order.PaymentStatus == "Paid")
+                {
+                    cancelConfirmText += " Hủy đơn không tự động hoàn tiền. Vui lòng liên hệ cửa hàng để đối chiếu và hỗ trợ hoàn tiền.";
+                }
+                else if (order.PaymentMethod == "BankTransfer")
+                {
+                    cancelConfirmText += " Nếu đã chuyển khoản, vui lòng liên hệ cửa hàng để đối chiếu giao dịch và xử lý số tiền đã chuyển.";
+                }
+                var cancelConfirmAction = "return window.confirm('" + cancelConfirmText + "');";
+                <tr>
+                    <td><strong>NX-@order.OrderID.ToString("D6")</strong></td>
+                    <td>@order.OrderDate.AddHours(7).ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="nowrap">@order.TotalAmount.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) ₫</td>
+                    <td><span class="status-badge">@Html.Partial("_OrderStatus", order.OrderStatus)</span></td>
+                    <td><span class="history-payment-method">@Html.Partial("_PaymentMethod", order.PaymentMethod)</span><span class="history-payment-status">@Html.Partial("_PaymentStatus", order.PaymentStatus)</span></td>
+                    <td>
+                        <div class="order-cancel-row-actions">
+                            <a class="table-link" href="@Url.Action("Details", new { id = order.OrderID })">Chi tiết ↗</a>
+                            @if (canCancel)
+                            {
+                                using (Html.BeginForm("Cancel", "Order", new { area = "" }, FormMethod.Post, new { @class = "order-cancel-form order-cancel-form-small", onsubmit = cancelConfirmAction }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@order.OrderID" />
+                                    <button class="order-cancel-button order-cancel-button-small" type="submit" aria-label="Hủy đơn NX-@order.OrderID.ToString("D6")">Hủy đơn hàng</button>
+                                }
+                            }
+                        </div>
+                        @if (canCancel && order.PaymentStatus == "Paid")
+                        {
+                            <small class="order-cancel-history-note">Hủy đơn không tự động hoàn tiền. Liên hệ cửa hàng để được hỗ trợ.</small>
+                        }
+                        else if (canCancel && order.PaymentMethod == "BankTransfer")
+                        {
+                            <small class="order-cancel-history-note">Đã chuyển khoản? Liên hệ cửa hàng để đối chiếu giao dịch.</small>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody></table></div>
+    }
+</div>

@@ -1,0 +1,353 @@
+/* Bank payment controls inherit the store's ordinary Arial typeface. */
+.payment-methods {
+  border: 0;
+  padding: 0;
+  margin: 30px 0 0;
+  min-width: 0;
+}
+.payment-methods legend {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  padding: 0;
+}
+.payment-method-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: #fafcf6;
+  border: 1px solid #dce5cf;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.payment-method-choice:has(input:checked) {
+  background: #f1f7e6;
+  border-color: #9cb874;
+}
+.payment-method-choice > input {
+  appearance: auto;
+  accent-color: #718f39;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 3px 0 0;
+}
+.payment-method-choice > span:not(.payment-method-symbol) {
+  flex: 1;
+  min-width: 0;
+}
+.payment-method-choice strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 700;
+}
+.payment-method-choice small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.8;
+  color: #84936f;
+  margin-top: 4px;
+}
+.payment-method-symbol {
+  font-size: 22px;
+  line-height: 1.3;
+  color: #7c965b;
+}
+.payment-method-choice.is-unavailable {
+  background: #f6f7f4;
+  border-color: #e0e4d9;
+  cursor: default;
+}
+.payment-method-choice.is-unavailable strong {
+  color: #7d8674;
+}
+.bank-transfer-panel {
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #dce5d0;
+  border-radius: 8px;
+  text-align: left;
+}
+.checkout-bank-panel {
+  margin-top: 22px;
+  background: #fbfdf8;
+}
+.bank-transfer-panel[hidden] {
+  display: none;
+}
+.bank-transfer-panel h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+.bank-transfer-intro,
+.bank-transfer-copy p {
+  font-size: 11px;
+  line-height: 1.9;
+  color: #78876a;
+  margin: 0 0 16px;
+}
+.bank-transfer-grid {
+  display: grid;
+  grid-template-columns: minmax(190px, 280px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+}
+.bank-qr-container {
+  padding: 18px;
+  border: 1px solid #e4e9df;
+  border-radius: 8px;
+  background: #fff;
+  text-align: center;
+}
+.bank-qr-link {
+  display: block;
+  color: #6c8252;
+}
+.bank-qr-image {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  max-height: none;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center;
+  filter: none;
+  transform: none;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+}
+.bank-qr-link > span {
+  display: block;
+  margin-top: 12px;
+  font-size: 9px;
+  line-height: 1.6;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.bank-transfer-copy {
+  min-width: 0;
+}
+.bank-transfer-copy p:last-child {
+  margin-bottom: 0;
+}
+.bank-transfer-value {
+  margin: 0 0 18px;
+}
+.bank-transfer-value > span {
+  display: block;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #859570;
+  margin-bottom: 7px;
+}
+.bank-transfer-value > strong {
+  display: block;
+  font-size: 25px;
+  line-height: 1.4;
+  font-weight: 700;
+  color: #344b27;
+  overflow-wrap: anywhere;
+}
+.bank-transfer-reference {
+  display: inline-block;
+  padding: 8px 13px;
+  font:
+    700 19px/1.5 Arial,
+    Helvetica,
+    sans-serif;
+  color: #344b27;
+  background: #f0f5e7;
+  border: 1px solid #dce7c9;
+  border-radius: 5px;
+  overflow-wrap: anywhere;
+}
+.bank-transfer-copy .bank-transfer-next-step,
+.bank-transfer-copy .bank-verification-note {
+  padding: 13px 14px;
+  border-left: 3px solid #b1cb8d;
+  background: #f3f8eb;
+  color: #6a7f54;
+  border-radius: 0 5px 5px 0;
+}
+.bank-transfer-copy p strong {
+  font-weight: 700;
+  color: #536d3c;
+}
+.payment-noscript-note {
+  font-size: 10px;
+  line-height: 1.9;
+  color: #7e8f6c;
+  margin: 15px 0 0;
+}
+.order-bank-panel {
+  margin-top: 28px;
+}
+.bank-transfer-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 23px;
+}
+.bank-transfer-heading .eyebrow {
+  font-size: 8px;
+  color: #81956b;
+}
+.bank-transfer-heading h2 {
+  margin: 8px 0 0;
+  font-size: 21px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+.bank-transfer-heading .status-badge {
+  font-size: 9px;
+}
+.payment-order-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 20px auto 0;
+  font-size: 11px;
+  line-height: 1.8;
+  color: #6a7e58;
+}
+.payment-order-meta p {
+  margin: 0;
+}
+.payment-order-meta p > span {
+  color: #92a17f;
+  margin-right: 5px;
+}
+.payment-state {
+  padding: 21px 24px;
+  border-radius: 8px;
+  margin-top: 28px;
+  text-align: left;
+}
+.payment-state h2 {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+.payment-state p {
+  font-size: 11px;
+  line-height: 1.9;
+  margin: 0;
+}
+.payment-state-paid {
+  border: 1px solid #cfe0b6;
+  background: #f1f8e6;
+  color: #648346;
+}
+.payment-state-neutral {
+  border: 1px solid #dfe5d6;
+  background: #f6f8f1;
+  color: #849176;
+}
+.payment-unavailable-note {
+  padding: 12px 14px;
+  background: #f7f8f3;
+  border: 1px solid #e2e8d9;
+  border-radius: 5px;
+}
+.history-payment-method,
+.history-payment-status {
+  display: block;
+  line-height: 1.7;
+}
+.history-payment-method {
+  font-size: 10px;
+  color: #60794b;
+}
+.history-payment-status {
+  font-size: 9px;
+  color: #92a17f;
+  margin-top: 5px;
+}
+@media (max-width: 1050px) {
+  .checkout-bank-panel .bank-transfer-grid {
+    grid-template-columns: 1fr;
+  }
+  .checkout-bank-panel .bank-qr-container {
+    max-width: 300px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+@media (max-width: 620px) {
+  .payment-methods legend {
+    font-size: 12px;
+  }
+  .payment-method-choice {
+    padding: 14px 12px;
+    gap: 10px;
+  }
+  .payment-method-choice strong {
+    font-size: 11px;
+  }
+  .payment-method-choice small {
+    font-size: 9px;
+  }
+  .bank-transfer-panel {
+    padding: 20px 17px;
+  }
+  .bank-transfer-panel h3 {
+    font-size: 14px;
+  }
+  .bank-transfer-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .bank-qr-container {
+    max-width: 300px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 17px;
+  }
+  .bank-transfer-value > strong {
+    font-size: 23px;
+  }
+  .bank-transfer-intro,
+  .bank-transfer-copy p {
+    font-size: 10px;
+  }
+  .bank-transfer-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .bank-transfer-heading h2 {
+    font-size: 20px;
+  }
+  .bank-transfer-reference {
+    font-size: 18px;
+  }
+  .payment-order-meta {
+    font-size: 10px;
+  }
+  .payment-state {
+    padding: 19px 18px;
+  }
+  .payment-state h2 {
+    font-size: 15px;
+  }
+  .payment-state p {
+    font-size: 10px;
+  }
+  .history-payment-method {
+    font-size: 9px;
+  }
+  .history-payment-status {
+    font-size: 8px;
+  }
+}

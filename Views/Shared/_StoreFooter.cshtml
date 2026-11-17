@@ -1,0 +1,160 @@
+﻿@{
+    var hotline = "0382312984";
+    var emailHoTro = "thekayzz2007@gmail.com";
+    var diaChi = "40 Phan Chu Trinh, Phường Tân Sơn Nhì, Ho Chi Minh City";
+    var gioLamViec = "8:00 - 22:00 (Thứ Hai - Chủ Nhật)";
+    var facebookUrl = "https://www.facebook.com/dak.957";
+    var tiktokUrl = "https://www.tiktok.com/@may29.akd_?is_from_webapp=1&sender_device=pc";
+    var youtubeUrl = "https://www.youtube.com/@thekayzz207";
+    var zaloUrl = "https://zalo.me/0382312984";
+
+    var socialLinks = new[] {
+        new { Name = "Facebook", Url = facebookUrl, Symbol = "f" },
+        new { Name = "TikTok", Url = tiktokUrl, Symbol = "♪" },
+        new { Name = "YouTube", Url = youtubeUrl, Symbol = "▶" },
+        new { Name = "Zalo", Url = zaloUrl, Symbol = "Z" }
+    };
+}
+<footer class="store-footer">
+    <div class="store-footer__container">
+        <div class="store-footer__grid">
+            <section class="store-footer__column">
+                <a class="store-footer__brand" href="@Url.Action("Index", "Home", new { area = "" })" aria-label="AnhKhoaStore - Trang chủ">
+                    <img src="@Url.Content("~/Content/images/logo-k.svg")" alt="" width="46" height="46" />
+                    <span>AnhKhoaStore<small>LINH KIỆN LAPTOP &amp; PC</small></span>
+                </a>
+                <h2>Kết nối với chúng tôi</h2>
+                <div class="store-footer__socials">
+                    @foreach (var social in socialLinks)
+                    {
+                        if (!string.IsNullOrWhiteSpace(social.Url))
+                        {
+                            <a class="store-footer__social" href="@social.Url" target="_blank" rel="noopener noreferrer" aria-label="@social.Name">@social.Symbol</a>
+                        }
+                    }
+                </div>
+            </section>
+
+            <section class="store-footer__column">
+                <h2>Hỗ trợ khách hàng</h2>
+                @if (!string.IsNullOrWhiteSpace(gioLamViec))
+                {
+                    <p class="store-footer__hours">@gioLamViec</p>
+                }
+                @if (!string.IsNullOrWhiteSpace(hotline))
+                {
+                    <div class="store-footer__contact">
+                        <span>Tư vấn mua hàng</span>
+                        <a href="@("tel:" + hotline.Replace(" ", "").Replace(".", "").Replace("-", ""))">@hotline</a>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(emailHoTro))
+                {
+                    <div class="store-footer__contact">
+                        <span>Email hỗ trợ</span>
+                        <a href="mailto:@emailHoTro">@emailHoTro</a>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(zaloUrl))
+                {
+                    <div class="store-footer__contact">
+                        <span>Tư vấn mua hàng qua Zalo</span>
+                        <a href="@zaloUrl" target="_blank" rel="noopener noreferrer">Nhắn tin cho AnhKhoaStore</a>
+                    </div>
+                }
+                <ul class="store-footer__links">
+                    <li><a href="@Url.Action("Index", "Home", new { area = "" })">Tìm kiếm linh kiện</a></li>
+                    <li><a href="@Url.Action("Index", "Home", new { area = "", device = "PC" })">Linh kiện máy tính PC</a></li>
+                    <li><a href="@Url.Action("Index", "Home", new { area = "", device = "Laptop" })">Nâng cấp laptop</a></li>
+                </ul>
+            </section>
+
+            <section class="store-footer__column">
+                <h2>Về AnhKhoaStore</h2>
+                <details class="store-footer__details">
+                    <summary>Giới thiệu</summary>
+                    <p>AnhKhoaStore cung cấp các lựa chọn linh kiện cho laptop và máy tính PC. Xem thông số sản phẩm để chọn đúng nhu cầu nâng cấp.</p>
+                </details>
+
+                <h2 class="store-footer__subheading">Tài khoản</h2>
+                <ul class="store-footer__links">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("A"))
+                        {
+                            <li><a href="@Url.Action("Index", "Home", new { area = "Admin" })">Bảng quản trị</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="@Url.Action("Profile", "Account", new { area = "" })">Thông tin cá nhân</a></li>
+                        }
+                        <li><a href="@Url.Action("ChangePassword", "Account", new { area = "" })">Đổi mật khẩu</a></li>
+                        <li>
+                            @using (Html.BeginForm("Logout", "Account", new { area = "" }, FormMethod.Post, new { @class = "store-footer__logout" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit">Đăng xuất</button>
+                            }
+                        </li>
+                    }
+                    else
+                    {
+                        <li><a href="@Url.Action("Login", "Account", new { area = "" })">Đăng nhập</a></li>
+                        <li><a href="@Url.Action("Register", "Account", new { area = "" })">Tạo tài khoản</a></li>
+                    }
+                </ul>
+            </section>
+
+            <section class="store-footer__column">
+                <h2>Thông tin</h2>
+                <details class="store-footer__details">
+                    <summary>Hướng dẫn mua hàng</summary>
+                    <p>Chọn sản phẩm, thêm vào giỏ, đăng nhập tài khoản khách hàng và xác nhận địa chỉ nhận hàng.</p>
+                </details>
+                <details class="store-footer__details">
+                    <summary>Hướng dẫn thanh toán</summary>
+                    <p>Đơn hàng dùng thanh toán khi nhận hàng (COD). Kiểm tra tổng tiền và địa chỉ trước khi xác nhận đặt mua.</p>
+                </details>
+                <details class="store-footer__details">
+                    <summary>Kiểm tra tương thích</summary>
+                    <p>Đối chiếu socket CPU, chuẩn RAM, khe cắm SSD và kích thước linh kiện với thiết bị trước khi đặt hàng.</p>
+                </details>
+                <ul class="store-footer__links">
+                    <li><a href="@Url.Action("Index", "Cart", new { area = "" })">Giỏ hàng của bạn</a></li>
+                    @if (User.IsInRole("A"))
+                    {
+                        <li><a href="@Url.Action("Index", "Orders", new { area = "Admin" })">Quản lý đơn hàng</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="@Url.Action("History", "Order", new { area = "" })">Theo dõi đơn hàng</a></li>
+                    }
+                </ul>
+            </section>
+            <section class="store-footer__column">
+                <h2>Hỗ trợ thanh toán</h2>
+                <div class="store-footer__badges">
+                    <span class="store-footer__badge">
+                        <b>COD</b>
+                        <span>Tiền mặt</span>
+                    </span>
+
+                    <img class="vietqr-logo"
+                         src="@Url.Content("~/Content/images/vietqr-logo.png")"
+                         alt="VietQR - Chuyển khoản ngân hàng" />
+                </div>
+            </section>
+        </div>
+
+        <div class="store-footer__bottom">
+            <div>
+                <p>© @DateTime.Now.Year AnhKhoaStore. Linh kiện laptop và PC.</p>
+                @if (!string.IsNullOrWhiteSpace(diaChi))
+                {
+                    <p>Địa chỉ: @diaChi</p>
+                }
+            </div>
+            <a class="store-footer__top" href="#main-content">Về đầu nội dung ↑</a>
+        </div>
+    </div>
+</footer>

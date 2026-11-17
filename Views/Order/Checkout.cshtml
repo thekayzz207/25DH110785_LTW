@@ -1,0 +1,81 @@
+﻿@model LTW_25DH110785.ViewModels.CheckoutVM
+@using System.Globalization
+@{
+    ViewBag.Title = "Đặt hàng";
+    var vi = CultureInfo.GetCultureInfo("vi-VN");
+    var qrAvailable = Model.BankTransferAvailable && !string.IsNullOrWhiteSpace(Model.BankQrImageUrl);
+}
+<div class="container page-space">
+    <nav class="breadcrumbs"><a href="@Url.Action("Index", "Cart")">Giỏ hàng</a><span>/</span><span>Đặt hàng</span></nav>
+    <div class="page-heading"><span class="eyebrow">HOÀN TẤT MUA HÀNG</span><h1>Hoàn tất đơn hàng<span>.</span></h1><p>Kiểm tra địa chỉ và chọn phương thức thanh toán phù hợp.</p></div>
+    @using (Html.BeginForm("Checkout", "Order", FormMethod.Post, new { @class = "checkout-grid", data_payment_checkout = "true" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.CheckoutToken)
+        <section class="panel checkout-form">
+            <h2>01 / Thông tin nhận hàng</h2>
+            @Html.ValidationSummary(false, "", new { @class = "validation-summary" })
+            <div class="form-grid">
+                <div class="form-field">@Html.LabelFor(m => m.CustomerName, "Họ và tên người nhận") @Html.TextBoxFor(m => m.CustomerName, new { autocomplete = "name", @readonly = "readonly" }) @Html.ValidationMessageFor(m => m.CustomerName)</div>
+                <div class="form-field">@Html.LabelFor(m => m.CustomerPhone, "Số điện thoại") @Html.TextBoxFor(m => m.CustomerPhone, new { autocomplete = "tel", type = "tel", @readonly = "readonly" }) @Html.ValidationMessageFor(m => m.CustomerPhone)</div>
+            </div>
+            <div class="form-field">@Html.LabelFor(m => m.AddressDelivery, "Địa chỉ giao hàng") @Html.TextAreaFor(m => m.AddressDelivery, new { autocomplete = "street-address", rows = 3, required = "required", placeholder = "Số nhà, đường, phường/xã, tỉnh/thành phố" }) @Html.ValidationMessageFor(m => m.AddressDelivery)</div>
+            <p class="checkout-profile-note">Tên và số điện thoại được lấy từ tài khoản. <a href="@Url.Action("Profile", "Account")">Cập nhật hồ sơ trước khi đặt hàng ↗</a></p>
+            <fieldset class="payment-methods">
+                <legend>02 / Phương thức thanh toán</legend>
+                <label class="payment-method-choice" for="payment-cod">
+                    @Html.RadioButtonFor(m => m.PaymentMethod, "COD", new { id = "payment-cod", required = "required", aria_describedby = "payment-cod-description" })
+                    <span><strong>Thanh toán khi nhận hàng (COD)</strong><small id="payment-cod-description">Thanh toán trực tiếp cho người giao hàng khi nhận sản phẩm.</small></span>
+                    <span class="payment-method-symbol" aria-hidden="true">₫</span>
+                </label>
+                <label class="payment-method-choice @(qrAvailable ? "" : "is-unavailable")" for="payment-bank">
+                    @if (qrAvailable)
+                    {
+                        @Html.RadioButtonFor(m => m.PaymentMethod, "BankTransfer", new { id = "payment-bank", aria_describedby = "payment-bank-description" })
+                    }
+                    else
+                    {
+                        @Html.RadioButtonFor(m => m.PaymentMethod, "BankTransfer", new { id = "payment-bank", disabled = "disabled", aria_describedby = "payment-bank-description" })
+                    }
+                    <span><strong>Chuyển khoản ngân hàng</strong><small id="payment-bank-description">@(qrAvailable ? "Quét mã QR của cửa hàng sau khi tạo đơn hàng." : "Cửa hàng chưa cung cấp mã QR. Bạn có thể đặt hàng bằng COD.")</small></span>
+                    <span class="payment-method-symbol" aria-hidden="true">▦</span>
+                </label>
+                @Html.ValidationMessageFor(m => m.PaymentMethod)
+            </fieldset>
+            @if (qrAvailable)
+            {
+                <section class="bank-transfer-panel checkout-bank-panel" data-bank-qr-panel aria-labelledby="checkout-bank-title">
+                    <h3 id="checkout-bank-title">Mã QR chuyển khoản của AnhKhoaStore</h3>
+                    <p class="bank-transfer-intro">Nếu chọn chuyển khoản, bạn sẽ sử dụng mã QR này để thanh toán sau khi đơn hàng được tạo.</p>
+                    <div class="bank-transfer-grid">
+                        <div class="bank-qr-container"><a class="bank-qr-link" href="@Url.Content(Model.BankQrImageUrl)" target="_blank" rel="noopener noreferrer"><img class="bank-qr-image" src="@Url.Content(Model.BankQrImageUrl)" alt="Mã QR tài khoản ngân hàng nhận thanh toán của AnhKhoaStore" /><span>Mở mã QR kích thước gốc ↗</span></a></div>
+                        <div class="bank-transfer-copy">
+                            @if (Model.Cart != null)
+                            {
+                                <div class="bank-transfer-value"><span>Tạm tính theo giỏ hàng</span><strong>@Model.Cart.Total.ToString("N0", vi) ₫</strong></div>
+                            }
+                            <p class="bank-transfer-next-step"><strong>Bước tiếp theo: xác nhận đặt hàng.</strong> Số tiền cuối cùng và nội dung chuyển khoản theo mã đơn sẽ hiển thị sau khi bạn bấm “Xác nhận đặt hàng”.</p>
+                            <p>Thực hiện chuyển khoản ở trang đơn hàng, sau khi đã có mã đơn. Cửa hàng sẽ đối chiếu giao dịch và cập nhật trạng thái thanh toán.</p>
+                        </div>
+                    </div>
+                </section>
+                <noscript><p class="payment-noscript-note">Bạn có thể chọn phương thức thanh toán bằng nút tròn phía trên. Phần mã QR luôn hiển thị để tham khảo; chỉ chuyển tiền sau khi đã xác nhận đặt hàng và nhận nội dung chuyển khoản.</p></noscript>
+            }
+        </section>
+        <aside class="order-summary">
+            <span class="eyebrow">LINH KIỆN BẠN ĐÃ CHỌN</span><h2>Đơn hàng của bạn</h2>
+            @if (Model.Cart != null)
+            {
+                foreach (var item in Model.Cart.Items)
+                {
+                    <div class="checkout-product"><span><strong>@item.ProductName</strong><small>Số lượng: @item.Quantity</small></span><b>@item.Subtotal.ToString("N0", vi) ₫</b></div>
+                }
+                <div class="summary-line"><span>Phí vận chuyển</span><strong>0 ₫</strong></div>
+                <div class="summary-line summary-total"><span>Tổng thanh toán</span><strong>@Model.Cart.Total.ToString("N0", vi) ₫</strong></div>
+            }
+            <button class="button primary full" type="submit">Xác nhận đặt hàng <span>→</span></button>
+            <p class="summary-note">Giá và tồn kho được kiểm tra lại khi tạo đơn. Đơn hàng cùng hướng dẫn thanh toán sẽ được lưu trong lịch sử mua hàng.</p>
+            <a class="clear-filter" href="@Url.Action("Index", "Cart")">← Quay lại giỏ hàng</a>
+        </aside>
+    }
+</div>

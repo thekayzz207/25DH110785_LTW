@@ -1,0 +1,53 @@
+﻿@model LTW_25DH110785.Models.Order
+@using System.Globalization
+@{
+    ViewBag.Title = "Đặt hàng thành công";
+    var vi = CultureInfo.GetCultureInfo("vi-VN");
+    var qrImageUrl = ViewBag.BankQrImageUrl as string;
+    var qrAvailable = ViewBag.BankTransferAvailable != null && (bool)ViewBag.BankTransferAvailable && !string.IsNullOrWhiteSpace(qrImageUrl);
+    var transferReference = LTW_25DH110785.Services.PaymentRules.TransferReference(Model.OrderID);
+}
+<div class="container success-page">
+    <div class="success-mark">✓</div><span class="eyebrow">CẢM ƠN BẠN ĐÃ ĐẶT HÀNG</span><h1>Đã nhận đơn hàng<br />của bạn<span>.</span></h1><p>Cảm ơn bạn đã chọn AnhKhoaStore. Theo dõi tiến trình xử lý trong lịch sử mua hàng.</p>
+    <div class="success-order"><div><small>Mã đơn hàng</small><strong>NX-@Model.OrderID.ToString("D6")</strong></div><div><small>Tổng thanh toán</small><strong>@Model.TotalAmount.ToString("N0", vi) ₫</strong></div><div><small>Trạng thái đơn</small><strong>@Html.Partial("_OrderStatus", Model.OrderStatus)</strong></div></div>
+    <div class="payment-order-meta"><p><span>Phương thức:</span> @Html.Partial("_PaymentMethod", Model.PaymentMethod)</p><p><span>Thanh toán:</span> @Html.Partial("_PaymentStatus", Model.PaymentStatus)</p></div>
+
+    @if (Model.PaymentMethod == "BankTransfer")
+    {
+        if (Model.OrderStatus == "Cancelled")
+        {
+            <section class="payment-state payment-state-neutral" role="status"><h2>Đơn hàng đã hủy</h2><p>Đơn hàng này không còn yêu cầu chuyển khoản. Nếu bạn đã gửi tiền, vui lòng liên hệ cửa hàng để được kiểm tra giao dịch.</p></section>
+        }
+        else if (Model.PaymentStatus == "Paid")
+        {
+            <section class="payment-state payment-state-paid" role="status"><h2>Đã xác nhận thanh toán</h2><p>Cửa hàng đã xác nhận thanh toán cho đơn NX-@Model.OrderID.ToString("D6"). Bạn có thể theo dõi tiến trình giao hàng trong tài khoản.</p></section>
+        }
+        else
+        {
+            <section class="bank-transfer-panel order-bank-panel" aria-labelledby="order-bank-title">
+                <div class="bank-transfer-heading"><div><span class="eyebrow">THANH TOÁN CHUYỂN KHOẢN</span><h2 id="order-bank-title">Thanh toán cho đơn hàng</h2></div><span class="status-badge">Chờ cửa hàng xác nhận</span></div>
+                <div class="bank-transfer-grid">
+                    @if (qrAvailable)
+                    {
+                        <div class="bank-qr-container"><a class="bank-qr-link" href="@Url.Content(qrImageUrl)" target="_blank" rel="noopener noreferrer"><img class="bank-qr-image" src="@Url.Content(qrImageUrl)" alt="Mã QR tài khoản ngân hàng nhận thanh toán của AnhKhoaStore" /><span>Mở mã QR kích thước gốc ↗</span></a></div>
+                    }
+                    <div class="bank-transfer-copy">
+                        <div class="bank-transfer-value"><span>Số tiền thanh toán</span><strong>@Model.TotalAmount.ToString("N0", vi) ₫</strong></div>
+                        <div class="bank-transfer-value"><span>Nội dung chuyển khoản</span><code class="bank-transfer-reference">@transferReference</code></div>
+                        @if (qrAvailable)
+                        {
+                            <p>Quét mã QR, kiểm tra thông tin người nhận trong ứng dụng ngân hàng và nhập đúng số tiền cùng nội dung chuyển khoản ở trên.</p>
+                        }
+                        else
+                        {
+                            <p class="payment-unavailable-note">Mã QR hiện chưa sẵn sàng. Vui lòng liên hệ cửa hàng để nhận thông tin chuyển khoản trước khi thanh toán.</p>
+                        }
+                        <p class="bank-verification-note"><strong>Cửa hàng xác nhận sau khi kiểm tra giao dịch.</strong> Nếu bạn đã chuyển khoản, hãy chờ cửa hàng đối chiếu và cập nhật trạng thái trong chi tiết đơn hàng.</p>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+
+    <div class="hero-actions"><a class="button primary" href="@Url.Action("Details", new { id = Model.OrderID })">Xem chi tiết đơn <span>→</span></a><a class="text-button" href="@Url.Action("Index", "Home")">Tiếp tục mua sắm ↗</a></div>
+</div>

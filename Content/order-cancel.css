@@ -1,0 +1,146 @@
+/* Customer cancellation controls; all other order/payment styles stay unchanged. */
+.order-cancel-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 28px;
+  padding: 22px 24px;
+  border: 1px solid #eadfd8;
+  border-radius: 8px;
+  background: #fffdfb;
+}
+.order-cancel-copy {
+  min-width: 0;
+}
+.order-cancel-panel h2,
+.order-cancel-info h2 {
+  margin: 0 0 8px;
+  font:
+    700 16px/1.5 Arial,
+    Helvetica,
+    sans-serif;
+  color: #5b4c41;
+}
+.order-cancel-panel p,
+.order-cancel-info p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.9;
+  color: #887a6c;
+}
+.order-cancel-panel .order-cancel-payment-note {
+  margin-top: 10px;
+  max-width: 690px;
+  font-size: 10px;
+}
+.order-cancel-payment-note strong {
+  font-weight: 700;
+  color: #80644c;
+}
+.order-cancel-form {
+  margin: 0;
+  flex: 0 0 auto;
+}
+.order-cancel-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 10px 17px;
+  border: 1px solid #b96b5f;
+  border-radius: 5px;
+  background: #fff;
+  color: #a05246;
+  font:
+    700 11px/1.5 Arial,
+    Helvetica,
+    sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.order-cancel-button:hover {
+  background: #fff2ee;
+  border-color: #a05246;
+}
+.order-cancel-button:focus-visible {
+  outline: 3px solid #d7a393;
+  outline-offset: 3px;
+}
+.order-cancel-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.order-cancel-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.order-cancel-button-small {
+  min-height: 30px;
+  padding: 6px 9px;
+  font-size: 9px;
+}
+.order-cancel-history-note {
+  display: block;
+  margin-top: 8px;
+  max-width: 210px;
+  color: #a08b77;
+  font-size: 9px;
+  line-height: 1.7;
+}
+.order-cancel-info {
+  margin-top: 25px;
+  padding: 18px 21px;
+  border: 1px solid #e1e6d9;
+  border-radius: 7px;
+  background: #f8faf4;
+}
+.order-cancel-info h2 {
+  color: #748365;
+  font-size: 14px;
+}
+.order-cancel-info p {
+  color: #8a967b;
+  font-size: 10px;
+}
+.order-cancel-info p + p {
+  margin-top: 8px;
+}
+@media (max-width: 620px) {
+  .order-cancel-panel {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 20px 18px;
+  }
+  .order-cancel-panel h2 {
+    font-size: 15px;
+  }
+  .order-cancel-panel p {
+    font-size: 10px;
+  }
+  .order-cancel-panel .order-cancel-button {
+    width: 100%;
+    font-size: 10px;
+  }
+  .order-cancel-row-actions {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .order-cancel-button-small {
+    min-height: 29px;
+    font-size: 8px;
+    padding: 6px 8px;
+  }
+  .order-cancel-history-note {
+    min-width: 125px;
+    max-width: 165px;
+    font-size: 8px;
+  }
+  .order-cancel-info {
+    padding: 17px 18px;
+  }
+}

@@ -1,0 +1,109 @@
+﻿@model LTW_25DH110785.Models.Order
+@using System.Globalization
+@{
+    ViewBag.Title = "Chi tiết đơn NX-" + Model.OrderID.ToString("D6");
+    var vi = CultureInfo.GetCultureInfo("vi-VN");
+    var qrImageUrl = ViewBag.BankQrImageUrl as string;
+    var qrAvailable = ViewBag.BankTransferAvailable != null && (bool)ViewBag.BankTransferAvailable && !string.IsNullOrWhiteSpace(qrImageUrl);
+    var transferReference = LTW_25DH110785.Services.PaymentRules.TransferReference(Model.OrderID);
+    var canCancel = LTW_25DH110785.Services.PaymentRules.CanCustomerCancel(Model);
+    var cancelConfirmText = "Bạn có chắc muốn hủy đơn NX-" + Model.OrderID.ToString("D6") + "?";
+    if (Model.PaymentStatus == "Paid")
+    {
+        cancelConfirmText += " Việc hủy đơn không tự động hoàn tiền. Vui lòng liên hệ cửa hàng để đối chiếu và hỗ trợ hoàn tiền.";
+    }
+    else if (Model.PaymentMethod == "BankTransfer")
+    {
+        cancelConfirmText += " Nếu bạn đã chuyển khoản, vui lòng liên hệ cửa hàng để đối chiếu giao dịch và xử lý số tiền đã chuyển.";
+    }
+    var cancelConfirmAction = "return window.confirm('" + cancelConfirmText + "');";
+}
+<div class="container page-space">
+    <nav class="breadcrumbs"><a href="@Url.Action("History")">Đơn hàng của tôi</a><span>/</span><span>NX-@Model.OrderID.ToString("D6")</span></nav>
+    <div class="page-heading order-heading"><div><span class="eyebrow">CHI TIẾT ĐƠN HÀNG</span><h1>Đơn NX-@Model.OrderID.ToString("D6")<span>.</span></h1><p>Đặt ngày @Model.OrderDate.AddHours(7).ToString("dd/MM/yyyy HH:mm")</p></div><span class="status-badge">@Html.Partial("_OrderStatus", Model.OrderStatus)</span></div>
+    <div class="checkout-grid">
+        <section class="panel"><h2>Linh kiện trong đơn hàng</h2><div class="table-wrap"><table class="data-table"><thead><tr><th>Sản phẩm</th><th>Đơn giá</th><th>SL</th><th>Thành tiền</th></tr></thead><tbody>
+            @foreach (var line in Model.OrderDetails)
+            {
+                <tr><td>@(line.Product == null ? "Linh kiện #" + line.ProductID : line.Product.ProductName)</td><td class="nowrap">@line.UnitPrice.ToString("N0", vi) ₫</td><td>@line.Quantity</td><td class="nowrap"><strong>@((line.UnitPrice * line.Quantity).ToString("N0", vi)) ₫</strong></td></tr>
+            }
+        </tbody></table></div></section>
+        <aside class="order-summary"><span class="eyebrow">GIAO HÀNG & THANH TOÁN</span><h2>Thông tin đơn hàng</h2><div class="order-address"><small>Người nhận</small><strong>@(Model.Customer == null ? "" : Model.Customer.CustomerName)</strong><p>@(Model.Customer == null ? "" : Model.Customer.CustomerPhone)</p><small>Địa chỉ giao hàng</small><p>@Model.AddressDelivery</p><small>Phương thức thanh toán</small><p>@Html.Partial("_PaymentMethod", Model.PaymentMethod)</p><small>Trạng thái thanh toán</small><p>@Html.Partial("_PaymentStatus", Model.PaymentStatus)</p></div><div class="summary-line summary-total"><span>Tổng cộng</span><strong>@Model.TotalAmount.ToString("N0", vi) ₫</strong></div><a class="button dark full" href="@Url.Action("History")">← Về lịch sử mua hàng</a></aside>
+    </div>
+
+    @if (Model.PaymentMethod == "BankTransfer")
+    {
+        if (Model.OrderStatus == "Cancelled")
+        {
+            <section class="payment-state payment-state-neutral" role="status"><h2>Đơn hàng đã hủy</h2><p>Đơn hàng này không còn yêu cầu chuyển khoản. Nếu bạn đã gửi tiền, vui lòng liên hệ cửa hàng để được kiểm tra giao dịch.</p></section>
+        }
+        else if (Model.PaymentStatus == "Paid")
+        {
+            <section class="payment-state payment-state-paid" role="status"><h2>Đã xác nhận thanh toán</h2><p>Cửa hàng đã xác nhận thanh toán cho đơn NX-@Model.OrderID.ToString("D6"). Bạn có thể theo dõi tiến trình giao hàng trong tài khoản.</p></section>
+        }
+        else
+        {
+            <section class="bank-transfer-panel order-bank-panel" aria-labelledby="order-bank-title">
+                <div class="bank-transfer-heading"><div><span class="eyebrow">THANH TOÁN CHUYỂN KHOẢN</span><h2 id="order-bank-title">Thanh toán cho đơn hàng</h2></div><span class="status-badge">Chờ cửa hàng xác nhận</span></div>
+                <div class="bank-transfer-grid">
+                    @if (qrAvailable)
+                    {
+                        <div class="bank-qr-container"><a class="bank-qr-link" href="@Url.Content(qrImageUrl)" target="_blank" rel="noopener noreferrer"><img class="bank-qr-image" src="@Url.Content(qrImageUrl)" alt="Mã QR tài khoản ngân hàng nhận thanh toán của AnhKhoaStore" /><span>Mở mã QR kích thước gốc ↗</span></a></div>
+                    }
+                    <div class="bank-transfer-copy">
+                        <div class="bank-transfer-value"><span>Số tiền thanh toán</span><strong>@Model.TotalAmount.ToString("N0", vi) ₫</strong></div>
+                        <div class="bank-transfer-value"><span>Nội dung chuyển khoản</span><code class="bank-transfer-reference">@transferReference</code></div>
+                        @if (qrAvailable)
+                        {
+                            <p>Quét mã QR, kiểm tra thông tin người nhận trong ứng dụng ngân hàng và nhập đúng số tiền cùng nội dung chuyển khoản ở trên.</p>
+                        }
+                        else
+                        {
+                            <p class="payment-unavailable-note">Mã QR hiện chưa sẵn sàng. Vui lòng liên hệ cửa hàng để nhận thông tin chuyển khoản trước khi thanh toán.</p>
+                        }
+                        <p class="bank-verification-note"><strong>Cửa hàng xác nhận sau khi kiểm tra giao dịch.</strong> Nếu bạn đã chuyển khoản, hãy chờ cửa hàng đối chiếu và cập nhật trạng thái trong chi tiết đơn hàng.</p>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+
+
+    @if (canCancel)
+    {
+        <section class="order-cancel-panel" aria-labelledby="order-cancel-title">
+            <div class="order-cancel-copy">
+                <h2 id="order-cancel-title">Hủy đơn hàng</h2>
+                <p>Bạn có thể tự hủy khi đơn hàng đang chờ xác nhận.</p>
+                @if (Model.PaymentStatus == "Paid")
+                {
+                    <p class="order-cancel-payment-note"><strong>Việc hủy đơn không tự động hoàn tiền.</strong> Vui lòng liên hệ cửa hàng để đối chiếu giao dịch và hỗ trợ hoàn tiền.</p>
+                }
+                else if (Model.PaymentMethod == "BankTransfer")
+                {
+                    <p class="order-cancel-payment-note">Nếu bạn đã chuyển khoản nhưng trạng thái chưa cập nhật, vui lòng liên hệ cửa hàng để đối chiếu giao dịch và xử lý số tiền đã chuyển.</p>
+                }
+            </div>
+            @using (Html.BeginForm("Cancel", "Order", new { area = "" }, FormMethod.Post, new { @class = "order-cancel-form", onsubmit = cancelConfirmAction }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.OrderID" />
+                <button class="order-cancel-button" type="submit">Hủy đơn hàng</button>
+            }
+        </section>
+    }
+    else if (Model.OrderStatus == "Processing" || Model.OrderStatus == "Shipping")
+    {
+        <section class="order-cancel-info"><h2>Cần hỗ trợ về đơn hàng?</h2><p>Đơn hàng đã chuyển sang bước xử lý hoặc giao hàng. Nếu cần điều chỉnh hay hủy, vui lòng liên hệ cửa hàng để kiểm tra khả năng hỗ trợ.</p></section>
+    }
+    else if (Model.OrderStatus == "Cancelled" && Model.PaymentMethod != "BankTransfer")
+    {
+        <section class="order-cancel-info" role="status"><h2>Đơn đã hủy</h2><p>Đơn hàng này đã được hủy.</p>
+            @if (Model.PaymentStatus == "Paid")
+            {
+                <p>Việc hủy đơn không tự động hoàn tiền. Vui lòng liên hệ cửa hàng để được đối chiếu và hỗ trợ.</p>
+            }
+        </section>
+    }
+
+</div>

@@ -1,0 +1,1656 @@
+:root {
+  --aks-font-step: 3px;
+}
+body,
+body *,
+body *::before,
+body *::after {
+  font-family: Arial, sans-serif !important;
+}
+/* Type sizes from Content/site.css; storefront scope. */
+body:not(.admin-body) {
+  font-size: max(12px, calc(15px + var(--aks-font-step)));
+}
+body:not(.admin-body) button,
+body:not(.admin-body) input,
+body:not(.admin-body) select,
+body:not(.admin-body) textarea {
+  font-size: inherit;
+}
+body:not(.admin-body) .announcement {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .announcement-inner > span:nth-child(2) {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .announcement-inner > a {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .brand {
+  font-size: max(12px, calc(24px + var(--aks-font-step)));
+}
+body:not(.admin-body) .brand small {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .header-search > span {
+  font-size: max(12px, calc(27px + var(--aks-font-step)));
+}
+body:not(.admin-body) .header-search input {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .header-search button {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .account-link {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .action-icon {
+  font-size: max(12px, calc(31px + var(--aks-font-step)));
+}
+body:not(.admin-body) .account-link small {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .cart-link {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .cart-link b {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .nav-links a {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .nav-note {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .menu-toggle {
+  font-size: max(12px, calc(23px + var(--aks-font-step)));
+}
+body:not(.admin-body) .eyebrow {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .hero h1 {
+  font-size: max(12px, calc(44px + var(--aks-font-step)));
+}
+body:not(.admin-body) .hero-copy > p {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .button {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .button span {
+  font-size: max(12px, calc(17px + var(--aks-font-step)));
+}
+body:not(.admin-body) .text-button {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .hero-count {
+  font-size: max(12px, calc(21px + var(--aks-font-step)));
+}
+body:not(.admin-body) .hero-count span {
+  font-size: max(12px, calc(14px + var(--aks-font-step)));
+}
+body:not(.admin-body) .hero-bottom p {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .hero-coordinate {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .hero-float small {
+  font-size: max(12px, calc(7px + var(--aks-font-step)));
+}
+body:not(.admin-body) .hero-float strong {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .hero-float > span:last-child {
+  font-size: max(12px, calc(18px + var(--aks-font-step)));
+}
+body:not(.admin-body) .hero-visual-foot {
+  font-size: max(12px, calc(7px + var(--aks-font-step)));
+}
+body:not(.admin-body) .brand-band-inner > span {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .brand-band strong {
+  font-size: max(12px, calc(20px + var(--aks-font-step)));
+}
+body:not(.admin-body) .brand-band strong:nth-child(2) {
+  font-size: max(12px, calc(27px + var(--aks-font-step)));
+}
+body:not(.admin-body) .brand-band strong:nth-child(5) {
+  font-size: max(12px, calc(15px + var(--aks-font-step)));
+}
+body:not(.admin-body) .brand-band strong:nth-child(6) {
+  font-size: max(12px, calc(22px + var(--aks-font-step)));
+}
+body:not(.admin-body) .brand-band strong:nth-child(7) {
+  font-size: max(12px, calc(16px + var(--aks-font-step)));
+}
+body:not(.admin-body) .brand-band strong span {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .section-heading h2 {
+  font-size: max(12px, calc(28px + var(--aks-font-step)));
+}
+body:not(.admin-body) .result-total {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .filter-form > h3 {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .filter-form h3 > span {
+  font-size: max(12px, calc(20px + var(--aks-font-step)));
+}
+body:not(.admin-body) .filter-form legend {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .filter-option {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .price-range input {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .price-range > span {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .filter-form .button {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .clear-filter {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .sidebar-note:after {
+  font-size: 135px;
+}
+body:not(.admin-body) .sidebar-note > span {
+  font-size: max(12px, calc(7px + var(--aks-font-step)));
+}
+body:not(.admin-body) .sidebar-note h3 {
+  font-size: max(12px, calc(23px + var(--aks-font-step)));
+}
+body:not(.admin-body) .sidebar-note p {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .sidebar-note a {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .catalog-toolbar > p {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .catalog-toolbar form {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .catalog-toolbar select {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .sort-button {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .product-tag {
+  font-size: max(12px, calc(7px + var(--aks-font-step)));
+}
+body:not(.admin-body) .image-arrow {
+  font-size: max(12px, calc(13px + var(--aks-font-step)));
+}
+body:not(.admin-body) .product-brand {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .product-brand > span {
+  font-size: max(12px, calc(7px + var(--aks-font-step)));
+}
+body:not(.admin-body) .product-info h3 {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .product-description {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .product-stock {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .product-bottom > strong {
+  font-size: max(12px, calc(16px + var(--aks-font-step)));
+}
+body:not(.admin-body) .product-bottom > strong small {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .add-button {
+  font-size: max(12px, calc(21px + var(--aks-font-step)));
+}
+body:not(.admin-body) .pagination a {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .upgrade-banner .eyebrow {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .upgrade-banner h2 {
+  font-size: max(12px, calc(35px + var(--aks-font-step)));
+}
+body:not(.admin-body) .upgrade-banner p {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .upgrade-art > span {
+  font-size: max(12px, calc(29px + var(--aks-font-step)));
+}
+body:not(.admin-body) .upgrade-art > b {
+  font-size: max(12px, calc(25px + var(--aks-font-step)));
+}
+body:not(.admin-body) .upgrade-art > small {
+  font-size: max(12px, calc(7px + var(--aks-font-step)));
+}
+body:not(.admin-body) .service-grid > div > span {
+  font-size: max(12px, calc(22px + var(--aks-font-step)));
+}
+body:not(.admin-body) .service-grid p {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .service-grid small {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .footer-brand {
+  font-size: max(12px, calc(24px + var(--aks-font-step)));
+}
+body:not(.admin-body) .footer-brand .brand-logo {
+  font-size: max(12px, calc(26px + var(--aks-font-step)));
+}
+body:not(.admin-body) .footer-brand small {
+  font-size: max(12px, calc(6px + var(--aks-font-step)));
+}
+body:not(.admin-body) .footer-grid > div:first-child > p {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .footer-grid h3 {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .footer-grid > div > a:not(.brand) {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .logout-form button {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .footer-note .eyebrow {
+  font-size: max(12px, calc(7px + var(--aks-font-step)));
+}
+body:not(.admin-body) .footer-note h3 {
+  font-size: max(12px, calc(25px + var(--aks-font-step)));
+}
+body:not(.admin-body) .footer-chip {
+  font-size: max(12px, calc(6px + var(--aks-font-step)));
+}
+body:not(.admin-body) .footer-bottom {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .breadcrumbs {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .page-heading h1 {
+  font-size: max(12px, calc(37px + var(--aks-font-step)));
+}
+body:not(.admin-body) .page-heading p {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .panel h2 {
+  font-size: max(12px, calc(15px + var(--aks-font-step)));
+}
+body:not(.admin-body) .form-field label {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .form-field input,
+body:not(.admin-body) .form-field textarea,
+body:not(.admin-body) .form-field select {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .form-section-title {
+  font-size: max(12px, calc(12px + var(--aks-font-step))) !important;
+}
+body:not(.admin-body) .validation-summary-errors {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .field-validation-error {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .form-switch {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .auth-story > h1 {
+  font-size: max(12px, calc(40px + var(--aks-font-step)));
+}
+body:not(.admin-body) .auth-story > p {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .auth-art small {
+  font-size: max(12px, calc(7px + var(--aks-font-step)));
+}
+body:not(.admin-body) .auth-card h2 {
+  font-size: max(12px, calc(28px + var(--aks-font-step)));
+}
+body:not(.admin-body) .auth-card > .muted {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .muted {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .account-tabs a {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .alert {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .empty-state h2,
+body:not(.admin-body) .empty-state h3 {
+  font-size: max(12px, calc(21px + var(--aks-font-step)));
+}
+body:not(.admin-body) .empty-state p {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .empty-icon {
+  font-size: max(12px, calc(37px + var(--aks-font-step)));
+}
+body:not(.admin-body) .detail-image .product-tag {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .detail-copy .eyebrow {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .detail-copy h1 {
+  font-size: max(12px, calc(31px + var(--aks-font-step)));
+}
+body:not(.admin-body) .detail-description {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .detail-copy .product-stock {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .detail-price {
+  font-size: max(12px, calc(33px + var(--aks-font-step)));
+}
+body:not(.admin-body) .detail-price span {
+  font-size: max(12px, calc(19px + var(--aks-font-step)));
+}
+body:not(.admin-body) .detail-copy > .muted {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .detail-buy > .button {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .quantity-control button {
+  font-size: max(12px, calc(19px + var(--aks-font-step)));
+}
+body:not(.admin-body) .quantity-control input {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .purchase-notes p {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .purchase-notes span {
+  font-size: max(12px, calc(14px + var(--aks-font-step)));
+}
+body:not(.admin-body) .specification-panel h2 {
+  font-size: max(12px, calc(22px + var(--aks-font-step)));
+}
+body:not(.admin-body) .specification-panel .eyebrow {
+  font-size: max(12px, calc(7px + var(--aks-font-step)));
+}
+body:not(.admin-body) .specification-text {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .cart-item-name {
+  font-size: max(12px, calc(13px + var(--aks-font-step)));
+}
+body:not(.admin-body) .cart-item-info > p {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .cart-item-info > .muted {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .remove-form button {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .cart-update input {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .cart-update button {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .cart-item-controls > strong {
+  font-size: max(12px, calc(15px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-summary > .eyebrow {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-summary h2 {
+  font-size: max(12px, calc(20px + var(--aks-font-step)));
+}
+body:not(.admin-body) .summary-line {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .summary-line strong {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .summary-total > span {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .summary-total > strong {
+  font-size: max(12px, calc(23px + var(--aks-font-step)));
+}
+body:not(.admin-body) .summary-note {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .checkout-form h2 {
+  font-size: max(12px, calc(14px + var(--aks-font-step)));
+}
+body:not(.admin-body) .payment-option > span:last-child {
+  font-size: max(12px, calc(20px + var(--aks-font-step)));
+}
+body:not(.admin-body) .payment-option strong {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .payment-option p {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .checkout-product {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .checkout-product > span > strong {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .checkout-product small {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .checkout-product > b {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .success-mark {
+  font-size: max(12px, calc(30px + var(--aks-font-step)));
+}
+body:not(.admin-body) .success-page .eyebrow {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .success-page h1 {
+  font-size: max(12px, calc(44px + var(--aks-font-step)));
+}
+body:not(.admin-body) .success-page > p {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .success-order small {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .success-order strong {
+  font-size: max(12px, calc(13px + var(--aks-font-step)));
+}
+body:not(.admin-body) .data-table th {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .data-table td {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .data-table td strong {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .table-link {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .status-badge {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-heading > .status-badge {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-address small {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-address strong {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-address p {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+@media (min-width: 1500px) {
+  body:not(.admin-body) .hero h1 {
+    font-size: max(12px, calc(44px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-info h3 {
+    font-size: max(12px, calc(13px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-description {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-bottom > strong {
+    font-size: max(12px, calc(17px + var(--aks-font-step)));
+  }
+}
+@media (max-width: 1120px) {
+  body:not(.admin-body) .hero h1 {
+    font-size: max(12px, calc(40px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-visual-foot {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand-band-inner strong {
+    font-size: max(12px, calc(18px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-info h3 {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-bottom > strong {
+    font-size: max(12px, calc(14px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-copy h1 {
+    font-size: max(12px, calc(28px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .summary-total > strong {
+    font-size: max(12px, calc(20px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .auth-story > h1 {
+    font-size: max(12px, calc(40px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .service-grid small {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .service-grid strong {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+}
+@media (max-width: 850px) {
+  body:not(.admin-body) .brand {
+    font-size: max(12px, calc(25px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand-logo {
+    font-size: max(12px, calc(28px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand small {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .account-link small {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .header-search input {
+    font-size: max(12px, calc(12px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .header-search button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero h1 {
+    font-size: max(12px, calc(36px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-copy > p {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-count {
+    font-size: max(12px, calc(18px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-bottom p {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-float strong {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-float small {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-coordinate {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-actions .button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-actions .text-button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand-band strong:nth-child(2) {
+    font-size: max(12px, calc(24px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand-band strong:nth-child(5) {
+    font-size: max(12px, calc(13px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand-band strong:nth-child(6) {
+    font-size: max(12px, calc(18px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand-band strong:nth-child(7) {
+    font-size: max(12px, calc(13px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-info h3 {
+    font-size: max(12px, calc(12px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-bottom > strong {
+    font-size: max(12px, calc(16px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .catalog-toolbar > p {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .sidebar-note h3 {
+    font-size: max(12px, calc(21px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .sidebar-note p {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .filter-option {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .filter-form > h3 {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .filter-form legend {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .price-range input {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .section-heading h2 {
+    font-size: max(12px, calc(26px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .section-heading .eyebrow {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .result-total {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .upgrade-banner h2 {
+    font-size: max(12px, calc(31px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .upgrade-art > span {
+    font-size: max(12px, calc(22px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .upgrade-art > small {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .service-grid strong {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .service-grid small {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-copy h1 {
+    font-size: max(12px, calc(24px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-description {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-price {
+    font-size: max(12px, calc(29px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .purchase-notes p {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .specification-panel h2 {
+    font-size: max(12px, calc(20px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .specification-text {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-item-name {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-item-controls > strong {
+    font-size: max(12px, calc(13px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-update button {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-update input {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-item-info > p {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-item-info > .muted {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .remove-form button {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-summary h2 {
+    font-size: max(12px, calc(17px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .summary-line {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .summary-total > strong {
+    font-size: max(12px, calc(21px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .summary-total > span {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-summary .button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .auth-story > h1 {
+    font-size: max(12px, calc(40px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .auth-story > p {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .auth-card h2 {
+    font-size: max(12px, calc(25px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .form-field input,
+  body:not(.admin-body) .form-field textarea {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .data-table td {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .data-table th {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .data-table td strong {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .table-link {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .status-badge {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .payment-option strong {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+}
+@media (max-width: 620px) {
+  body:not(.admin-body) .announcement {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .announcement-inner > a {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand {
+    font-size: max(12px, calc(24px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand-logo {
+    font-size: max(12px, calc(26px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand small {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .account-link {
+    font-size: 0;
+  }
+  body:not(.admin-body) .action-icon {
+    font-size: max(12px, calc(29px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-link b {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .menu-toggle {
+    font-size: max(12px, calc(21px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .nav-links a {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .header-search > span {
+    font-size: max(12px, calc(24px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .header-search input {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .header-search button {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero h1 {
+    font-size: max(12px, calc(36px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero .eyebrow {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-copy > p {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-actions .button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-actions .text-button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-count {
+    font-size: max(12px, calc(21px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-bottom p {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-coordinate {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-float small {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-float strong {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .hero-float > span:last-child {
+    font-size: max(12px, calc(17px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand-band-inner strong {
+    font-size: max(12px, calc(15px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand-band strong:nth-child(2) {
+    font-size: max(12px, calc(20px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand-band strong:nth-child(6) {
+    font-size: max(12px, calc(16px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand-band strong:nth-child(7) {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .section-heading h2 {
+    font-size: max(12px, calc(25px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .section-heading .eyebrow {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .result-total {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .filter-form > h3 {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .filter-form legend {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .filter-option {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .price-range input {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .filter-form .button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .clear-filter {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .catalog-toolbar > p {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .catalog-toolbar form {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .catalog-toolbar select {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .sort-button {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-tag {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .image-arrow {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-brand {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-info h3 {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-description {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-stock {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-bottom > strong {
+    font-size: max(12px, calc(13px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .product-bottom > strong small {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .add-button {
+    font-size: max(12px, calc(18px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .pagination a {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .upgrade-banner .eyebrow {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .upgrade-banner h2 {
+    font-size: max(12px, calc(29px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .upgrade-banner p {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .upgrade-banner .button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .upgrade-art > span {
+    font-size: max(12px, calc(30px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .service-grid > div > span {
+    font-size: max(12px, calc(20px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .service-grid strong {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .service-grid small {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .footer-brand {
+    font-size: max(12px, calc(24px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .footer-grid > div:first-child > p {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .footer-grid h3 {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .footer-grid > div > a:not(.brand) {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .footer-bottom {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .breadcrumbs {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .page-heading .eyebrow {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .page-heading h1 {
+    font-size: max(12px, calc(30px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .page-heading p {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .form-field label {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .form-field input,
+  body:not(.admin-body) .form-field textarea {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .form-section-title {
+    font-size: max(12px, calc(10px + var(--aks-font-step))) !important;
+  }
+  body:not(.admin-body) .button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .form-switch {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .auth-story > h1 {
+    font-size: max(12px, calc(33px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .auth-story > .eyebrow {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .auth-story > p {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .auth-card > .eyebrow {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .auth-card h2 {
+    font-size: max(12px, calc(25px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .auth-card > .muted {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .account-tabs a {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .alert {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .empty-icon {
+    font-size: max(12px, calc(29px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .empty-state h2,
+  body:not(.admin-body) .empty-state h3 {
+    font-size: max(12px, calc(18px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .empty-state p {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-copy .eyebrow {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-copy h1 {
+    font-size: max(12px, calc(27px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-description {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-copy .product-stock {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-price {
+    font-size: max(12px, calc(30px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-price span {
+    font-size: max(12px, calc(17px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-copy > .muted {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .detail-buy > .button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .quantity-control input {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .quantity-control button {
+    font-size: max(12px, calc(17px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .purchase-notes p {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .specification-panel .eyebrow {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .specification-panel h2 {
+    font-size: max(12px, calc(21px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .specification-text {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .related-section .section-heading h2 {
+    font-size: max(12px, calc(23px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .related-section .section-heading .text-button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-item-name {
+    font-size: max(12px, calc(12px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-item-info > p {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-item-info > .muted {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .remove-form button {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-item-controls > strong {
+    font-size: max(12px, calc(14px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-update input {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .cart-update button {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .continue-shopping {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-summary h2 {
+    font-size: max(12px, calc(21px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-summary > .eyebrow {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .summary-line {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .summary-line strong {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .summary-total > span {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .summary-total > strong {
+    font-size: max(12px, calc(22px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .summary-note {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .checkout-form h2 {
+    font-size: max(12px, calc(12px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .payment-option strong {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .payment-option p {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .checkout-product {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .success-mark {
+    font-size: max(12px, calc(27px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .success-page .eyebrow {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .success-page h1 {
+    font-size: max(12px, calc(33px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .success-page > p {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .success-order small {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .success-order strong {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .success-page .hero-actions .button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .data-table th {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .data-table td {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .data-table td strong {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .table-link {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .status-badge {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-heading h1 {
+    font-size: max(12px, calc(26px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-heading > .status-badge {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-address small {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-address strong {
+    font-size: max(12px, calc(12px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-address p {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+}
+body:not(.admin-body) .checkout-profile-note {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .footer-brand {
+  font-size: max(12px, calc(22px + var(--aks-font-step)));
+}
+@media (max-width: 1120px) {
+  body:not(.admin-body) .brand {
+    font-size: max(12px, calc(22px + var(--aks-font-step)));
+  }
+}
+@media (max-width: 850px) {
+  body:not(.admin-body) .brand {
+    font-size: max(12px, calc(22px + var(--aks-font-step)));
+  }
+}
+@media (max-width: 620px) {
+  body:not(.admin-body) .brand {
+    font-size: max(12px, calc(20px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .brand small {
+    font-size: max(12px, calc(6px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .footer-brand {
+    font-size: max(12px, calc(22px + var(--aks-font-step)));
+  }
+}
+/* Type sizes from Content/payment.css; storefront scope. */
+body:not(.admin-body) .payment-methods legend {
+  font-size: max(12px, calc(14px + var(--aks-font-step)));
+}
+body:not(.admin-body) .payment-method-choice strong {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .payment-method-choice small {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .payment-method-symbol {
+  font-size: max(12px, calc(22px + var(--aks-font-step)));
+}
+body:not(.admin-body) .bank-transfer-panel h3 {
+  font-size: max(12px, calc(15px + var(--aks-font-step)));
+}
+body:not(.admin-body) .bank-transfer-intro,
+body:not(.admin-body) .bank-transfer-copy p {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .bank-qr-link > span {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .bank-transfer-value > span {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .bank-transfer-value > strong {
+  font-size: max(12px, calc(25px + var(--aks-font-step)));
+}
+body:not(.admin-body) .bank-transfer-reference {
+  font-size: max(12px, calc(19px + var(--aks-font-step)));
+}
+body:not(.admin-body) .payment-noscript-note {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .bank-transfer-heading .eyebrow {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body:not(.admin-body) .bank-transfer-heading h2 {
+  font-size: max(12px, calc(21px + var(--aks-font-step)));
+}
+body:not(.admin-body) .bank-transfer-heading .status-badge {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .payment-order-meta {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .payment-state h2 {
+  font-size: max(12px, calc(16px + var(--aks-font-step)));
+}
+body:not(.admin-body) .payment-state p {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .history-payment-method {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .history-payment-status {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+@media (max-width: 620px) {
+  body:not(.admin-body) .payment-methods legend {
+    font-size: max(12px, calc(12px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .payment-method-choice strong {
+    font-size: max(12px, calc(11px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .payment-method-choice small {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .bank-transfer-panel h3 {
+    font-size: max(12px, calc(14px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .bank-transfer-value > strong {
+    font-size: max(12px, calc(23px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .bank-transfer-intro,
+  body:not(.admin-body) .bank-transfer-copy p {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .bank-transfer-heading h2 {
+    font-size: max(12px, calc(20px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .bank-transfer-reference {
+    font-size: max(12px, calc(18px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .payment-order-meta {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .payment-state h2 {
+    font-size: max(12px, calc(15px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .payment-state p {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .history-payment-method {
+    font-size: max(12px, calc(9px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .history-payment-status {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+}
+/* Type sizes from Content/order-cancel.css; storefront scope. */
+body:not(.admin-body) .order-cancel-panel h2,
+body:not(.admin-body) .order-cancel-info h2 {
+  font-size: max(12px, calc(16px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-cancel-panel p,
+body:not(.admin-body) .order-cancel-info p {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-cancel-panel .order-cancel-payment-note {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-cancel-button {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-cancel-button-small {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-cancel-history-note {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-cancel-info h2 {
+  font-size: max(12px, calc(14px + var(--aks-font-step)));
+}
+body:not(.admin-body) .order-cancel-info p {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+@media (max-width: 620px) {
+  body:not(.admin-body) .order-cancel-panel h2 {
+    font-size: max(12px, calc(15px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-cancel-panel p {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-cancel-panel .order-cancel-button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-cancel-button-small {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .order-cancel-history-note {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+}
+/* Type sizes from Content/footer.css; storefront scope. */
+body:not(.admin-body) .store-footer {
+  font-size: max(12px, calc(16px + var(--aks-font-step)));
+}
+body:not(.admin-body) .store-footer h2 {
+  font-size: max(12px, calc(18px + var(--aks-font-step)));
+}
+body:not(.admin-body) .store-footer__brand {
+  font-size: max(12px, calc(24px + var(--aks-font-step)));
+}
+body:not(.admin-body) .store-footer__brand small {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body:not(.admin-body) .store-footer__social {
+  font-size: max(12px, calc(21px + var(--aks-font-step)));
+}
+body:not(.admin-body) .store-footer__hours {
+  font-size: max(12px, calc(14px + var(--aks-font-step)));
+}
+body:not(.admin-body) .store-footer__details p {
+  font-size: max(12px, calc(14px + var(--aks-font-step)));
+}
+body:not(.admin-body) .store-footer__logout button {
+  font-size: inherit;
+}
+body:not(.admin-body) .store-footer__badge {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body:not(.admin-body) .store-footer__badge b {
+  font-size: max(12px, calc(18px + var(--aks-font-step)));
+}
+body:not(.admin-body) .store-footer__note {
+  font-size: max(12px, calc(14px + var(--aks-font-step)));
+}
+body:not(.admin-body) .store-footer__bottom {
+  font-size: max(12px, calc(13px + var(--aks-font-step)));
+}
+@media (max-width: 760px) {
+  body:not(.admin-body) .store-footer {
+    font-size: max(12px, calc(15px + var(--aks-font-step)));
+  }
+  body:not(.admin-body) .store-footer h2 {
+    font-size: max(12px, calc(16px + var(--aks-font-step)));
+  }
+}
+/* Type sizes from Areas/Admin/Content/admin.css; admin scope. */
+body.admin-body {
+  font-size: max(12px, calc(13px + var(--aks-font-step)));
+}
+body.admin-body button,
+body.admin-body input,
+body.admin-body select,
+body.admin-body textarea {
+  font-size: inherit;
+}
+body.admin-body .wordmark {
+  font-size: max(12px, calc(20px + var(--aks-font-step)));
+}
+body.admin-body .wordmark-copy small {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body.admin-body .nav-caption {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body.admin-body .sidebar nav a span {
+  font-size: max(12px, calc(19px + var(--aks-font-step)));
+}
+body.admin-body .sidebar-bottom small {
+  font-size: max(12px, calc(8px + var(--aks-font-step)));
+}
+body.admin-body .store-label {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body.admin-body .topbar-user {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body.admin-body .admin-footer {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body.admin-body .eyebrow {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body.admin-body h1 {
+  font-size: max(12px, calc(29px + var(--aks-font-step)));
+}
+body.admin-body h2 {
+  font-size: max(12px, calc(15px + var(--aks-font-step)));
+}
+body.admin-body .page-heading p:not(.eyebrow) {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body.admin-body .button {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body.admin-body .small {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body.admin-body .metric > span {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body.admin-body .metric strong {
+  font-size: max(12px, calc(30px + var(--aks-font-step)));
+}
+body.admin-body .metric .money {
+  font-size: max(12px, calc(24px + var(--aks-font-step)));
+}
+body.admin-body .metric small {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body.admin-body .panel-heading a,
+body.admin-body .panel-heading span {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body.admin-body th {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body.admin-body td {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body.admin-body .cell-small {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body.admin-body .badge {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body.admin-body .filterbar input,
+body.admin-body .filterbar select {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body.admin-body .product-cell small {
+  font-size: max(12px, calc(9px + var(--aks-font-step)));
+}
+body.admin-body .pagination {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body.admin-body .notice {
+  font-size: max(12px, calc(12px + var(--aks-font-step)));
+}
+body.admin-body .field label {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body.admin-body .field small,
+body.admin-body .form-note {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body.admin-body .checkbox-field {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body.admin-body .validation-summary-errors {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body.admin-body .field-validation-error {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+body.admin-body .info-list > div {
+  font-size: max(12px, calc(11px + var(--aks-font-step)));
+}
+body.admin-body .total {
+  font-size: max(12px, calc(20px + var(--aks-font-step)));
+}
+@media (max-width: 1200px) {
+  body.admin-body .metric .money {
+    font-size: max(12px, calc(30px + var(--aks-font-step)));
+  }
+}
+@media (max-width: 760px) {
+  body.admin-body .wordmark {
+    font-size: max(12px, calc(25px + var(--aks-font-step)));
+  }
+  body.admin-body .wordmark span {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body.admin-body .sidebar nav a {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body.admin-body .sidebar nav a span {
+    font-size: max(12px, calc(14px + var(--aks-font-step)));
+  }
+  body.admin-body .store-label {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body.admin-body .topbar-user {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body.admin-body h1 {
+    font-size: max(12px, calc(25px + var(--aks-font-step)));
+  }
+  body.admin-body .metric strong {
+    font-size: max(12px, calc(30px + var(--aks-font-step)));
+  }
+  body.admin-body .metric .money {
+    font-size: max(12px, calc(22px + var(--aks-font-step)));
+  }
+  body.admin-body .metric small {
+    font-size: max(12px, calc(8px + var(--aks-font-step)));
+  }
+  body.admin-body .button {
+    font-size: max(12px, calc(10px + var(--aks-font-step)));
+  }
+  body.admin-body .panel-heading h2 {
+    font-size: max(12px, calc(13px + var(--aks-font-step)));
+  }
+}
+body.admin-body .store-label {
+  font-size: max(12px, calc(10px + var(--aks-font-step)));
+}
+@media (max-width: 680px) {
+  body.admin-body .wordmark {
+    font-size: max(12px, calc(20px + var(--aks-font-step)));
+  }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  body.admin-body .wordmark {
+    font-size: max(12px, calc(18px + var(--aks-font-step)));
+  }
+  body.admin-body .wordmark-copy small {
+    font-size: max(12px, calc(7px + var(--aks-font-step)));
+  }
+}
+@media (max-width: 760px) {
+  body.admin-body .wordmark {
+    font-size: max(12px, calc(20px + var(--aks-font-step)));
+  }
+  body.admin-body .wordmark .wordmark-copy {
+    font-size: max(12px, calc(20px + var(--aks-font-step)));
+  }
+}
+/* Keep compact branding, icon controls and form fields readable. */
+body:not(.admin-body),
+body.admin-body {
+  line-height: 1.6;
+}
+body:not(.admin-body) input,
+body:not(.admin-body) select,
+body:not(.admin-body) textarea,
+body.admin-body input,
+body.admin-body select,
+body.admin-body textarea {
+  font-size: max(16px, calc(14px + var(--aks-font-step))) !important;
+  line-height: 1.4;
+}
+body:not(.admin-body) .brand {
+  font-size: 26px !important;
+}
+body:not(.admin-body) .brand small {
+  font-size: 11px !important;
+  letter-spacing: 0.1px;
+}
+body:not(.admin-body) .store-footer__brand {
+  font-size: 24px !important;
+  white-space: normal;
+}
+body:not(.admin-body) .store-footer__brand small {
+  font-size: 11px !important;
+  letter-spacing: 0;
+}
+body.admin-body .wordmark {
+  font-size: 20px !important;
+}
+body.admin-body .wordmark .wordmark-copy {
+  font-size: inherit !important;
+}
+body.admin-body .wordmark-copy small {
+  font-size: 10px !important;
+  letter-spacing: 0;
+}
+body.admin-body .topbar {
+  min-height: 79px;
+  height: auto;
+  padding-block: 12px;
+}
+body:not(.admin-body) .cart-link b {
+  font-size: 12px !important;
+}
+body:not(.admin-body) .add-button {
+  font-size: 20px !important;
+  padding: 0;
+  line-height: 1;
+}
+body:not(.admin-body) .quantity-control button {
+  font-size: 18px !important;
+  line-height: 1;
+}
+body:not(.admin-body) .quantity-control input {
+  font-size: 16px !important;
+  padding-inline: 3px;
+}
+body:not(.admin-body) .product-bottom {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+body:not(.admin-body) .product-bottom strong {
+  overflow-wrap: normal;
+}
+@media (min-width: 761px) and (max-width: 1200px) {
+  body.admin-body .wordmark {
+    font-size: 18px !important;
+  }
+}
+@media (max-width: 850px) {
+  body:not(.admin-body) .brand {
+    font-size: 24px !important;
+  }
+}
+@media (max-width: 760px) {
+  body.admin-body .topbar {
+    min-height: 58px;
+  }
+  body.admin-body .sidebar nav a {
+    line-height: 1.4;
+  }
+}
+@media (max-width: 620px) {
+  body:not(.admin-body) .brand {
+    font-size: 22px !important;
+  }
+  body:not(.admin-body) .brand small {
+    font-size: 10px !important;
+  }
+  body:not(.admin-body) .cart-label {
+    font-size: 0 !important;
+  }
+  body:not(.admin-body) .product-bottom strong {
+    font-size: 14px !important;
+  }
+}

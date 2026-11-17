@@ -1,0 +1,277 @@
+.store-footer {
+  background: #0b0b0b;
+  color: #f5f5f5;
+  padding: 76px 0 38px;
+  font:
+    16px/1.55 Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.store-footer__container {
+  width: calc(100% - 64px);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.store-footer__grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1.2fr 1fr 1.15fr 1fr;
+  gap: 38px;
+  align-items: start;
+}
+
+.store-footer__column {
+  min-width: 0;
+}
+
+.store-footer h2 {
+  margin: 0 0 17px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.store-footer a,
+.store-footer summary {
+  color: #f5f5f5;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.store-footer a:hover,
+.store-footer summary:hover,
+.store-footer__logout button:hover {
+  color: #ccf27b;
+}
+
+.store-footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: fit-content;
+  margin: 0 0 29px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.store-footer__brand img {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
+}
+
+.store-footer__brand small {
+  display: block;
+  margin-top: 7px;
+  color: #bcbcbc;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.6px;
+}
+
+.store-footer__socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.store-footer__social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #343434;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.store-footer__social--empty {
+  opacity: 0.55;
+}
+
+.store-footer__hours {
+  margin: -7px 0 17px;
+  color: #d5d5d5;
+  font-size: 14px;
+}
+
+.store-footer__contact {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 17px;
+  overflow-wrap: anywhere;
+}
+
+.store-footer__contact a {
+  font-weight: 700;
+}
+
+.store-footer__links {
+  display: grid;
+  gap: 13px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.store-footer__links li {
+  margin: 0;
+  padding: 0;
+}
+
+.store-footer h2.store-footer__subheading {
+  margin-top: 29px;
+}
+
+.store-footer__details {
+  margin: 0 0 13px;
+}
+
+.store-footer__details summary {
+  width: fit-content;
+  cursor: pointer;
+  list-style: none;
+}
+
+.store-footer__details summary::-webkit-details-marker {
+  display: none;
+}
+
+.store-footer__details p {
+  margin: 10px 0 0;
+  color: #bcbcbc;
+  font-size: 14px;
+}
+
+.store-footer__logout {
+  margin: 0;
+}
+
+.store-footer__logout button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #f5f5f5;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.store-footer__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.store-footer__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  border-radius: 4px;
+  background: #fff;
+  color: #222;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.store-footer__badge b {
+  color: #277235;
+  font-size: 18px;
+}
+
+.store-footer__badges img {
+  width: 58px;
+  height: 34px;
+  padding: 4px;
+  border-radius: 4px;
+  background: #fff;
+  object-fit: contain;
+}
+
+.store-footer__note {
+  margin: 13px 0 0;
+  color: #c2c2c2;
+  font-size: 14px;
+}
+
+.store-footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 30px;
+  margin-top: 58px;
+  padding-top: 28px;
+  border-top: 1px solid #3a3a3a;
+  color: #979797;
+  font-size: 13px;
+}
+
+.store-footer__bottom p {
+  margin: 0 0 6px;
+}
+
+.store-footer .store-footer__top {
+  flex: 0 0 auto;
+  color: #c2c2c2;
+}
+
+@media (max-width: 1200px) {
+  .store-footer__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 38px 30px;
+  }
+}
+
+@media (max-width: 760px) {
+  .store-footer {
+    padding-top: 48px;
+    font-size: 15px;
+  }
+  .store-footer__container {
+    width: calc(100% - 40px);
+  }
+  .store-footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .store-footer__grid > :first-child {
+    grid-column: 1 / -1;
+  }
+  .store-footer h2 {
+    font-size: 16px;
+  }
+  .store-footer__bottom {
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 38px;
+  }
+}
+
+@media (max-width: 480px) {
+  .store-footer__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.store-footer__badges {
+    align-items: center;
+}
+
+    .store-footer__badges .vietqr-logo {
+        width: 110px;
+        height: 42px;
+        padding: 6px 8px;
+        background: #fff;
+        border-radius: 4px;
+        object-fit: contain;
+    }

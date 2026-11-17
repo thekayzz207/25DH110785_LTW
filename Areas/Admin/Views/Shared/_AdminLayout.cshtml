@@ -1,0 +1,20 @@
+﻿@{ var current = Convert.ToString(ViewContext.RouteData.Values["controller"]); }
+<!DOCTYPE html>
+<html lang="vi">
+<link href="@Url.Content("~/Content/typography.css")"
+      rel="stylesheet" />
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>@ViewBag.Title · AnhKhoaStore Admin</title><meta name="description" content="Khu vực quản trị cửa hàng linh kiện laptop và PC AnhKhoaStore"/><link rel="icon" type="image/svg+xml" href="@Url.Content("~/Content/images/favicon.svg")"/><link rel="stylesheet" href="@Url.Content("~/Areas/Admin/Content/admin.css")"/></head>
+<body class="admin-body">
+<aside class="sidebar"><a class="wordmark" href="@Url.Action("Index", "Home", new { area = "Admin" })"><img class="admin-brand-icon" src="@Url.Content("~/Content/images/logo-k.svg")" alt="" width="32" height="32"/><span class="wordmark-copy">AnhKhoaStore<small>QUẢN TRỊ CỬA HÀNG</small></span></a><p class="nav-caption">KHÔNG GIAN QUẢN TRỊ</p><nav aria-label="Quản trị">
+<a class="@(current == "Home" ? "active" : "")" href="@Url.Action("Index", "Home", new { area = "Admin" })"><span>◈</span>Tổng quan</a>
+<a class="@(current == "Products" ? "active" : "")" href="@Url.Action("Index", "Products", new { area = "Admin" })"><span>▦</span>Sản phẩm</a>
+<a class="@(current == "Categories" ? "active" : "")" href="@Url.Action("Index", "Categories", new { area = "Admin" })"><span>≡</span>Danh mục</a>
+<a class="@(current == "Orders" ? "active" : "")" href="@Url.Action("Index", "Orders", new { area = "Admin" })"><span>▤</span>Đơn hàng</a>
+<a class="@(current == "Customers" ? "active" : "")" href="@Url.Action("Index", "Customers", new { area = "Admin" })"><span>◎</span>Khách hàng</a>
+<a class="@(current == "Users" ? "active" : "")" href="@Url.Action("Index", "Users", new { area = "Admin" })"><span>◇</span>Tài khoản admin</a></nav><div class="sidebar-bottom"><a href="@Url.Action("Index", "Home", new { area = "" })">↗ Xem cửa hàng</a><small>LINH KIỆN LAPTOP + PC</small></div></aside>
+<div class="admin-shell"><header class="topbar"><span class="store-label"><i></i> AnhKhoaStore / HỆ THỐNG QUẢN TRỊ</span><div class="topbar-user"><span>@User.Identity.Name</span>@using (Html.BeginForm("Logout", "Account", new { area = "" }, FormMethod.Post, new { @class = "inline-form" })) { @Html.AntiForgeryToken()<button class="text-button" type="submit">Đăng xuất ↗</button> }</div></header><main class="admin-main">
+@if (TempData["Success"] != null) { <div class="notice success" role="status">@TempData["Success"]</div> }
+@if (TempData["Error"] != null) { <div class="notice error" role="alert">@TempData["Error"]</div> }
+@RenderBody()</main><footer class="admin-footer">AnhKhoaStore · Linh kiện cho mọi ý tưởng.</footer></div>
+@RenderSection("scripts", required: false)
+</body></html>

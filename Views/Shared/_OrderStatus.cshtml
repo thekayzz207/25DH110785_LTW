@@ -1,0 +1,3 @@
+﻿@model string
+@{ var labels = new Dictionary<string,string> { {"Pending","Chờ xác nhận"},{"Processing","Đang xử lý"},{"Shipping","Đang giao hàng"},{"Delivered","Đã giao hàng"},{"Cancelled","Đã hủy"} }; }
+@(Model != null && labels.ContainsKey(Model) ? labels[Model] : Model)

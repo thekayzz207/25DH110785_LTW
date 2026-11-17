@@ -1,0 +1,72 @@
+﻿@model LTW_25DH110785.ViewModels.CartVM
+@using System.Globalization
+@{
+    ViewBag.Title = "Giỏ hàng";
+    var vi = CultureInfo.GetCultureInfo("vi-VN");
+}
+<div class="container page-space cart-quantity-page" data-cart-quantity>
+    <nav class="breadcrumbs"><a href="@Url.Action("Index", "Home")">Trang chủ</a><span>/</span><span>Giỏ hàng</span></nav>
+    <div class="page-heading"><span class="eyebrow">GIỎ HÀNG CỦA BẠN</span><h1>Giỏ hàng của bạn<span>.</span></h1><p>Kiểm tra linh kiện và số lượng trước khi đặt hàng.</p></div>
+    <div class="cart-quantity-message" data-cart-quantity-status role="status" aria-live="polite" hidden="@(Model.Items.Count == 0 ? "hidden" : null)">Thay đổi số lượng rồi bấm Cập nhật để lưu giỏ hàng.</div>
+    <a class="cart-quantity-recheck" data-cart-quantity-recheck href="@Url.Action("Index", "Cart", new { area = "" })" hidden>Tải lại giỏ hàng để kiểm tra</a>
+    <div class="empty-state panel cart-quantity-empty" data-cart-quantity-empty hidden="@(Model.Items.Count > 0 ? "hidden" : null)">
+        <span class="empty-icon">＋</span><h2>Giỏ hàng đang trống</h2><p>Bắt đầu bản nâng cấp bằng linh kiện phù hợp.</p><a class="button primary" href="@Url.Action("Index", "Home")">Khám phá linh kiện <span>↗</span></a>
+    </div>
+    @if (Model.Items.Count > 0)
+    {
+        <div class="checkout-grid cart-quantity-filled" data-cart-quantity-filled>
+            <section class="cart-items">
+                @foreach (var item in Model.Items)
+                {
+                    var maxQuantity = Math.Min(99, Math.Max(0, item.StockQuantity));
+                    <article class="cart-row cart-quantity-row" data-cart-quantity-row data-product-id="@item.ProductID" data-unit-price-cents="@((item.Price * 100m).ToString("0", CultureInfo.InvariantCulture))" data-confirmed-quantity="@item.Quantity" data-stock-quantity="@item.StockQuantity" data-max-quantity="@maxQuantity" data-available="@(item.StockQuantity > 0 ? "true" : "false")">
+                        <a class="cart-image" href="@Url.Action("Details", "Home", new { id = item.ProductID })"><img src="@Url.Content(string.IsNullOrWhiteSpace(item.ProductImage) ? "~/Content/images/cpu.svg" : item.ProductImage)" alt="@item.ProductName" /></a>
+                        <div class="cart-item-info">
+                            <a class="cart-item-name" href="@Url.Action("Details", "Home", new { id = item.ProductID })">@item.ProductName</a>
+                            <p><span data-cart-quantity-unit-price>@item.Price.ToString("N0", vi) ₫</span> / sản phẩm</p>
+                            <span class="muted cart-quantity-stock" data-cart-quantity-stock>@(item.StockQuantity > 0 ? "Còn " + item.StockQuantity + " sản phẩm" : "Tạm hết hàng hoặc ngừng bán")</span>
+                            @using (Html.BeginForm("Remove", "Cart", new { area = "" }, FormMethod.Post, new { @class = "remove-form", data_cart_quantity_remove = "true" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@item.ProductID" />
+                                <button type="submit">Xóa khỏi giỏ</button>
+                            }
+                        </div>
+                        <div class="cart-item-controls cart-quantity-item-controls">
+                            @using (Html.BeginForm("Update", "Cart", new { area = "" }, FormMethod.Post, new { @class = "cart-update cart-quantity-form", data_cart_quantity_form = "true" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@item.ProductID" />
+                                <label class="sr-only" for="quantity-@item.ProductID">Số lượng @item.ProductName</label>
+                                <div class="cart-quantity-control">
+                                    <button class="cart-quantity-step" data-cart-quantity-step="-1" type="button" aria-label="Giảm số lượng @item.ProductName" disabled="@(item.StockQuantity <= 0 ? "disabled" : null)" hidden>−</button>
+                                    <input class="cart-quantity-input" data-cart-quantity-input id="quantity-@item.ProductID" type="number" name="quantity" value="@item.Quantity" min="1" max="@maxQuantity" step="1" inputmode="numeric" aria-describedby="quantity-note-@item.ProductID" disabled="@(item.StockQuantity <= 0 ? "disabled" : null)" />
+                                    <button class="cart-quantity-step" data-cart-quantity-step="1" type="button" aria-label="Tăng số lượng @item.ProductName" disabled="@(item.StockQuantity <= 0 ? "disabled" : null)" hidden>+</button>
+                                </div>
+                                <button class="cart-quantity-fallback" type="submit" disabled="@(item.StockQuantity <= 0 ? "disabled" : null)">Cập nhật</button>
+                            }
+                            <strong data-cart-quantity-line-total>@item.Subtotal.ToString("N0", vi) ₫</strong>
+                            <p class="cart-quantity-row-message" data-cart-quantity-row-message id="quantity-note-@item.ProductID" hidden></p>
+                        </div>
+                    </article>
+                }
+                <a class="text-button continue-shopping" href="@Url.Action("Index", "Home")">← Tiếp tục mua sắm</a>
+            </section>
+            <aside class="order-summary">
+                <span class="eyebrow">TÓM TẮT GIỎ HÀNG</span><h2>Tóm tắt giỏ hàng</h2>
+                <div class="summary-line"><span>Tạm tính (<span data-cart-quantity-count>@Model.Items.Sum(x => x.Quantity)</span> sản phẩm)</span><strong data-cart-quantity-subtotal>@Model.Total.ToString("N0", vi) ₫</strong></div>
+                <div class="summary-line"><span>Phí vận chuyển</span><strong>0 ₫</strong></div>
+                <div class="summary-line summary-total"><span>Tổng cộng</span><strong data-cart-quantity-total>@Model.Total.ToString("N0", vi) ₫</strong></div>
+                @if (User.IsInRole("A"))
+                {
+                    <p class="summary-note">Bạn đang dùng tài khoản quản trị. Đăng xuất và dùng tài khoản khách hàng để đặt mua.</p><a class="button primary full" href="@Url.Action("Index", "Home", new { area = "Admin" })">Về trang quản trị <span>→</span></a>
+                }
+                else
+                {
+                    <a class="button primary full cart-quantity-checkout" data-cart-quantity-checkout href="@Url.Action("Checkout", "Order")">Tiến hành đặt hàng <span>→</span></a>
+                }
+                <p class="summary-note">Thanh toán khi nhận hàng (COD) hoặc chuyển khoản ngân hàng. Giá và tồn kho được kiểm tra lại khi xác nhận đơn.</p>
+            </aside>
+        </div>
+    }
+</div>

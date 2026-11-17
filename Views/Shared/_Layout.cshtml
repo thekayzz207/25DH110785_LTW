@@ -1,0 +1,73 @@
+﻿@using System.Collections.Generic
+@{
+    var cart = Session["Cart"] as Dictionary<int, int>;
+    var count = cart == null ? 0 : cart.Values.Sum();
+    var pageTitle = ViewBag.Title as string ?? "Linh kiện PC & Laptop";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="AnhKhoaStore — linh kiện PC và laptop. Chọn đúng linh kiện, nâng tầm trải nghiệm." />
+    <meta name="theme-color" content="#20241f" />
+    <title>@pageTitle | AnhKhoaStore</title>
+    <link rel="icon" type="image/svg+xml" href="@Url.Content("~/Content/images/favicon.svg")" />
+    <link href="@Url.Content("~/Content/site.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/payment.css")"
+          rel="stylesheet" />
+    <link href="@Url.Content("~/Content/order-cancel.css")"
+          rel="stylesheet" />
+    <link href="@Url.Content("~/Content/footer.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/typography.css")"
+          rel="stylesheet" />
+    <link href="@Url.Content("~/Content/cart-toast.css")"
+          rel="stylesheet" />
+    <link href="@Url.Content("~/Content/cart-quantity.css")" rel="stylesheet" />
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Chuyển đến nội dung</a>
+    <div class="announcement"><div class="container announcement-inner"><span>CHUYÊN LINH KIỆN PC & LAPTOP</span><span>Nâng cấp hiệu năng  |  Mở rộng khả năng</span><a href="@Url.Action("Index", "Home", new { area = "", device = "Laptop" })">Khám phá linh kiện máy tính ↗</a></div></div>
+    <header class="site-header">
+        <div class="container header-main">
+            <a class="brand" href="@Url.Action("Index", "Home", new { area = "" })" aria-label="AnhKhoaStore - Trang chủ"><img class="brand-logo" src="@Url.Content("~/Content/images/logo-k.svg")" alt="" width="42" height="42" /><span>AnhKhoaStore<small>LINH KIỆN MÁY TÍNH</small></span></a>
+            <form class="header-search" action="@Url.Action("Index", "Home", new { area = "" })" method="get" role="search"><label class="sr-only" for="site-search">Tìm kiếm linh kiện</label><span aria-hidden="true">⌕</span><input id="site-search" name="q" type="search" value="@Request.QueryString["q"]" placeholder="Bạn đang tìm linh kiện gì?" /><button type="submit">Tìm kiếm</button></form>
+            <div class="header-actions">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a class="account-link" href="@(User.IsInRole("A") ? Url.Action("Index", "Home", new { area = "Admin" }) : Url.Action("Profile", "Account", new { area = "" }))"><span class="action-icon" aria-hidden="true">◎</span><span>Tài khoản<small>@User.Identity.Name</small></span></a>
+                }
+                else
+                {
+                    <a class="account-link" href="@Url.Action("Login", "Account", new { area = "" })"><span class="action-icon" aria-hidden="true">◎</span><span>Tài khoản<small>Đăng nhập / Đăng ký</small></span></a>
+                }
+                <a class="cart-link" href="@Url.Action("Index", "Cart", new { area = "" })"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2 12h12l2-8H6M9 21h.01M18 21h.01" /></svg><span class="cart-label">Giỏ hàng</span><b>@count</b></a>
+                <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="main-navigation" aria-label="Mở menu">☰</button>
+            </div>
+        </div>
+        <nav class="main-nav" id="main-navigation" aria-label="Menu chính">
+            <div class="container nav-inner">
+                <div class="nav-links">
+                    <a href="@Url.Action("Index", "Home", new { area = "" })">Tất cả linh kiện</a><a href="@Url.Action("Index", "Home", new { area = "", device = "PC" })">Linh kiện PC</a><a href="@Url.Action("Index", "Home", new { area = "", device = "Laptop" })">Linh kiện Laptop</a>@if (!User.IsInRole("A"))
+                    {<a href="@Url.Action("History", "Order", new { area = "" })">Đơn hàng của tôi</a>}@if (User.IsInRole("A"))
+                    {<a href="@Url.Action("Index", "Home", new { area = "Admin" })">Quản trị ↗</a>}
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main id="main-content">
+        @if (TempData["Success"] != null)
+        {<div class="container"><div class="alert success" role="status">@TempData["Success"]</div></div>}
+        @if (TempData["Error"] != null)
+        {<div class="container"><div class="alert error" role="alert">@TempData["Error"]</div></div>}
+        @RenderBody()
+    </main>
+    <section class="service-strip"><div class="container service-grid"><div><span>01</span><p><strong>Dành cho PC & Laptop</strong><small>Lựa chọn linh kiện theo thiết bị</small></p></div><div><span>02</span><p><strong>Thông số rõ ràng</strong><small>Kiểm tra tương thích trước khi mua</small></p></div><div><span>03</span><p><strong>Đặt hàng dễ dàng</strong><small>Thanh toán khi nhận hàng</small></p></div><div><span>04</span><p><strong>Theo dõi đơn hàng</strong><small>Cập nhật ngay trong tài khoản</small></p></div></div></section>
+    @Html.Partial("_StoreFooter")
+    <script src="@Url.Content("~/Content/site.js")" defer></script>
+    <script src="@Url.Content("~/Content/payment.js")" defer></script>
+    @RenderSection("scripts", required: false)
+    <script src="@Url.Content("~/Content/cart-toast.js")" defer></script>
+    <script src="@Url.Content("~/Content/cart-quantity.js")" defer></script>
+</body>
+</html>

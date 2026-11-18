@@ -3,7 +3,7 @@
 <html lang="vi">
 <link href="@Url.Content("~/Content/typography.css")"
       rel="stylesheet" />
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>@ViewBag.Title · AnhKhoaStore Admin</title><meta name="description" content="Khu vực quản trị cửa hàng linh kiện laptop và PC AnhKhoaStore"/><link rel="icon" type="image/svg+xml" href="@Url.Content("~/Content/images/favicon.svg")"/><link rel="stylesheet" href="@Url.Content("~/Areas/Admin/Content/admin.css")"/></head>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>@ViewBag.Title · AnhKhoaStore Admin</title><meta name="description" content="Khu vực quản trị cửa hàng linh kiện laptop và PC AnhKhoaStore"/><link rel="icon" type="image/svg+xml" href="@Url.Content("~/Content/images/favicon.svg")"/><link rel="stylesheet" href="@Url.Content("~/Areas/Admin/Content/admin.css")"/><link href="@Url.Content("~/Areas/Admin/Content/admin-orders.css")" rel="stylesheet" /></head>
 <body class="admin-body">
 <aside class="sidebar"><a class="wordmark" href="@Url.Action("Index", "Home", new { area = "Admin" })"><img class="admin-brand-icon" src="@Url.Content("~/Content/images/logo-k.svg")" alt="" width="32" height="32"/><span class="wordmark-copy">AnhKhoaStore<small>QUẢN TRỊ CỬA HÀNG</small></span></a><p class="nav-caption">KHÔNG GIAN QUẢN TRỊ</p><nav aria-label="Quản trị">
 <a class="@(current == "Home" ? "active" : "")" href="@Url.Action("Index", "Home", new { area = "Admin" })"><span>◈</span>Tổng quan</a>

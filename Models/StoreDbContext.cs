@@ -3,7 +3,6 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace LTW_25DH110785.Models
 {
-    // Maps the existing SQL schema. There are no automatic migrations or DB initialization.
     public class StoreDbContext : DbContext
     {
         static StoreDbContext() { Database.SetInitializer<StoreDbContext>(null); }

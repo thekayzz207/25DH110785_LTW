@@ -79,7 +79,7 @@ namespace LTW_25DH110785.Areas.Admin.Controllers
         {
             var product = db.Products.Find(model.ProductID);
             if (product == null) return HttpNotFound();
-            // The existing image path always comes from SQL, never a hidden form field.
+
             model.ProductImage = product.ProductImage;
             ValidateProduct(model);
             byte[] originalVersion = null;
@@ -122,7 +122,7 @@ namespace LTW_25DH110785.Areas.Admin.Controllers
         {
             var product = db.Products.Find(id);
             if (product == null) return HttpNotFound();
-            // Keep order history and historical unit prices intact.
+
             if (db.OrderDetails.Any(d => d.ProductID == id))
             {
                 product.IsActive = false;

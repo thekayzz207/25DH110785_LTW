@@ -55,7 +55,7 @@ namespace LTW_25DH110785.Areas.Admin.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Edit(AdminUserVM model)
         {
-            // Both lookup and update remain restricted to administrators.
+
             var user = db.Users.SingleOrDefault(u => u.Username == model.Username && u.UserRole == "A");
             if (user == null) return HttpNotFound();
             if (ModelState.IsValid)
@@ -81,7 +81,7 @@ namespace LTW_25DH110785.Areas.Admin.Controllers
             {
                 using (var transaction = db.Database.BeginTransaction(IsolationLevel.Serializable))
                 {
-                    // Lock the administrator set before counting to preserve at least one admin.
+
                     var admins = db.Users.SqlQuery("SELECT * FROM [dbo].[User] WITH (UPDLOCK,HOLDLOCK) WHERE [UserRole] = N'A'").ToList();
                     var user = admins.SingleOrDefault(u => string.Equals(u.Username, id, StringComparison.OrdinalIgnoreCase));
                     if (user == null) return HttpNotFound();

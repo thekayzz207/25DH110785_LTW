@@ -82,4 +82,28 @@ namespace LTW_25DH110785.ViewModels
         public string BankQrImageUrl { get; set; }
         public CartVM Cart { get; set; }
     }
+
+    public class MyOrderVM
+    {
+        public string Q { get; set; }
+        public string SelectedStatus { get; set; }
+        public bool HasAnyOrders { get; set; }
+        public int MatchedCount { get; set; }
+        public List<MyOrderTabVM> Tabs { get; set; } = new List<MyOrderTabVM>();
+        public List<MyOrderGroupVM> Groups { get; set; } = new List<MyOrderGroupVM>();
+    }
+    public class MyOrderTabVM
+    {
+        public string Key { get; set; }
+        public string Label { get; set; }
+        public int Count { get; set; }
+    }
+    public class MyOrderGroupVM
+    {
+        public string Key { get; set; }
+        public string Label { get; set; }
+        public int TotalCount { get; set; }
+        public bool IsExpanded { get; set; }
+        public List<Order> Orders { get; set; } = new List<Order>();
+    }
 }

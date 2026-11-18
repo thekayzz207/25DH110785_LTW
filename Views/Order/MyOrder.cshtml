@@ -1,0 +1,135 @@
+﻿@model LTW_25DH110785.ViewModels.MyOrderVM
+@using System.Globalization
+@{
+    ViewBag.Title = "Đơn hàng của tôi";
+    var vi = CultureInfo.GetCultureInfo("vi-VN");
+    var selectedTab = Model.Tabs.FirstOrDefault(t => t.Key == Model.SelectedStatus);
+    var selectedCount = selectedTab == null ? Model.MatchedCount : selectedTab.Count;
+}
+<div class="container page-space my-orders-page">
+    <div class="my-orders-heading"><span class="eyebrow">TÀI KHOẢN ANHKHOASTORE</span><h1>Đơn hàng của tôi</h1><p>Theo dõi đơn hàng, xem lại linh kiện và mua lại sản phẩm bạn cần.</p></div>
+    <nav class="my-orders-account-tabs" aria-label="Tài khoản"><a href="@Url.Action("Profile", "Account", new { area = "" })">Hồ sơ</a><a href="@Url.Action("ChangePassword", "Account", new { area = "" })">Đổi mật khẩu</a><a class="is-active" href="@Url.Action("History", "Order", new { area = "" })" aria-current="page">Đơn hàng của tôi</a></nav>
+    <div class="my-orders-toolbar">
+        @using (Html.BeginForm("History", "Order", new { area = "" }, FormMethod.Get, new { @class = "my-orders-search", role = "search" }))
+        {
+            <label class="sr-only" for="my-orders-search">Tìm theo mã đơn hoặc tên sản phẩm</label>
+            <input type="hidden" name="status" value="@Model.SelectedStatus" />
+            <input id="my-orders-search" type="search" name="q" value="@Model.Q" maxlength="200" placeholder="Tìm theo mã đơn hoặc tên sản phẩm…" />
+            <button type="submit">Tìm đơn hàng</button>
+        }
+        <p class="my-orders-resultcount">@selectedCount đơn hàng trong mục đang chọn</p>
+    </div>
+    <nav class="my-orders-tabs" aria-label="Lọc theo trạng thái đơn hàng">
+        @foreach (var tab in Model.Tabs)
+        {
+            var active = tab.Key == Model.SelectedStatus;
+            <a class="@(active ? "is-active" : "")" href="@Url.Action("History", "Order", new { area = "", q = Model.Q, status = tab.Key })" aria-current="@(active ? "page" : null)">@tab.Label <span class="my-orders-tab-count">@tab.Count</span></a>
+        }
+    </nav>
+    @if (!Model.HasAnyOrders)
+    {
+        <section class="my-orders-empty"><span class="my-orders-empty-icon" aria-hidden="true">▤</span><h2>BẠN CHƯA CÓ ĐƠN HÀNG NÀO. HÃY ĐẶT ĐƠN NGAY.</h2><p>Khám phá linh kiện laptop và PC phù hợp với nhu cầu của bạn.</p><a class="my-orders-home" href="@Url.Action("Index", "Home", new { area = "" })">HOME</a></section>
+    }
+    else if (Model.Groups == null || !Model.Groups.Any())
+    {
+        <section class="my-orders-empty my-orders-filterempty"><span class="my-orders-empty-icon" aria-hidden="true">⌕</span><h2>Không tìm thấy đơn phù hợp</h2><p>Thử từ khóa khác hoặc chọn trạng thái khác để xem đơn hàng.</p><a class="my-orders-clear" href="@Url.Action("History", "Order", new { area = "" })">Xóa bộ lọc</a></section>
+    }
+    else
+    {
+        <div class="my-orders-groups">
+            @foreach (var group in Model.Groups)
+            {
+                var groupId = "my-orders-group-" + group.Key;
+                <section class="my-orders-group" id="@groupId" aria-labelledby="@(groupId + "-title")">
+                    <div class="my-orders-group-heading"><div><h2 id="@(groupId + "-title")">@group.Label <span class="my-orders-group-count">@group.TotalCount</span></h2><p>Hiển thị @group.Orders.Count / @group.TotalCount đơn hàng mới nhất</p></div></div>
+                    <div class="my-orders-grid">
+                        @foreach (var order in group.Orders)
+                        {
+                            var canCancel = LTW_25DH110785.Services.PaymentRules.CanCustomerCancel(order);
+                            var cancelText = "Bạn có chắc muốn hủy đơn NX-" + order.OrderID.ToString("D6") + "?";
+                            if (order.PaymentStatus == "Paid")
+                            {
+                                cancelText += " Hủy đơn không tự động hoàn tiền. Vui lòng liên hệ cửa hàng để đối chiếu và hỗ trợ hoàn tiền.";
+                            }
+                            else if (order.PaymentMethod == "BankTransfer")
+                            {
+                                cancelText += " Nếu đã chuyển khoản, vui lòng liên hệ cửa hàng để đối chiếu giao dịch và xử lý số tiền đã chuyển.";
+                            }
+                            var cancelAction = "return window.confirm('" + cancelText + "');";
+                            <article class="my-orders-card">
+                                <header class="my-orders-card-header"><div class="my-orders-code"><a href="@Url.Action("Details", "Order", new { area = "", id = order.OrderID })">Đơn NX-@order.OrderID.ToString("D6")</a><small class="my-orders-date">Đặt ngày @order.OrderDate.AddHours(7).ToString("dd/MM/yyyy HH:mm")</small></div><div class="my-orders-status"><span class="my-orders-badge">@Html.Partial("_OrderStatus", order.OrderStatus)</span></div></header>
+                                <div class="my-orders-card-body">
+                                    @foreach (var line in order.OrderDetails.OrderBy(d => d.ID))
+                                    {
+                                        var product = line.Product;
+                                        var activeProduct = product != null && product.IsActive;
+                                        var canBuy = activeProduct && product.StockQuantity > 0;
+                                        var productName = product == null ? "Linh kiện #" + line.ProductID : product.ProductName;
+                                        var imageUrl = product == null || string.IsNullOrWhiteSpace(product.ProductImage) ? "~/Content/images/cpu.svg" : product.ProductImage;
+                                        <div class="my-orders-product">
+                                            <div class="my-orders-product-image"><img src="@Url.Content(imageUrl)" alt="@productName" loading="lazy" /></div>
+                                            <div class="my-orders-product-copy"><h3>@productName</h3><div class="my-orders-product-meta"><span>Đơn giá đã mua: <strong>@line.UnitPrice.ToString("N0", vi) ₫</strong></span><span>Số lượng: <strong>@line.Quantity</strong></span><span>Thành tiền: <strong>@((line.UnitPrice * line.Quantity).ToString("N0", vi)) ₫</strong></span></div></div>
+                                            <div class="my-orders-product-actions">
+                                                @using (Html.BeginForm("Add", "Cart", new { area = "" }, FormMethod.Post, new { @class = "add-form my-orders-buy-form" }))
+                                                {
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="productId" value="@line.ProductID" />
+                                                    <input type="hidden" name="quantity" value="1" />
+                                                    <input type="hidden" name="returnUrl" value="@Request.RawUrl" />
+                                                    <button class="my-orders-buy-button" type="submit" disabled="@(!canBuy ? "disabled" : null)" aria-label="Mua lại @productName">Mua lại</button>
+                                                }
+                                                @if (activeProduct)
+                                                {
+                                                    <a class="my-orders-product-detail" href="@Url.Action("Details", "Home", new { area = "", id = line.ProductID })">Xem chi tiết sản phẩm ↗</a>
+                                                    if (!canBuy)
+                                                    {
+                                                        <small class="my-orders-product-unavailable">Sản phẩm tạm hết hàng</small>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <small class="my-orders-product-unavailable">Sản phẩm hiện không còn mở bán</small>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <footer class="my-orders-card-footer">
+                                    <div class="my-orders-payment"><p>@Html.Partial("_PaymentMethod", order.PaymentMethod)</p><p>@Html.Partial("_PaymentStatus", order.PaymentStatus)</p></div>
+                                    <div class="my-orders-total"><span>Tổng tiền đơn hàng</span><strong>@order.TotalAmount.ToString("N0", vi) ₫</strong></div>
+                                    <div class="my-orders-order-actions"><a class="my-orders-detail-link" href="@Url.Action("Details", "Order", new { area = "", id = order.OrderID })">Xem chi tiết đơn hàng</a>
+                                        @if (canCancel)
+                                        {
+                                            using (Html.BeginForm("Cancel", "Order", new { area = "" }, FormMethod.Post, new { @class = "my-orders-cancel-form", onsubmit = cancelAction }))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@order.OrderID" />
+                                                <button class="my-orders-cancel-button" type="submit" aria-label="Hủy đơn NX-@order.OrderID.ToString("D6")">Hủy đơn hàng</button>
+                                            }
+                                        }
+                                    </div>
+                                    @if (canCancel && order.PaymentStatus == "Paid")
+                                    {
+                                        <small class="my-orders-cancel-note">Hủy đơn không tự động hoàn tiền. Liên hệ cửa hàng để được hỗ trợ.</small>
+                                    }
+                                    else if (canCancel && order.PaymentMethod == "BankTransfer")
+                                    {
+                                        <small class="my-orders-cancel-note">Đã chuyển khoản? Liên hệ cửa hàng để đối chiếu giao dịch.</small>
+                                    }
+                                </footer>
+                            </article>
+                        }
+                    </div>
+                    @if (!group.IsExpanded && group.TotalCount > group.Orders.Count)
+                    {
+                        <div class="my-orders-more"><a href="@(Url.Action("History", "Order", new { area = "", q = Model.Q, status = Model.SelectedStatus, expanded = group.Key }) + "#" + groupId)">Xem thêm @group.Label.ToLower(vi) <span aria-hidden="true">↓</span></a></div>
+                    }
+                    else if (group.IsExpanded)
+                    {
+                        <div class="my-orders-more"><p class="my-orders-limit-note">Đang hiển thị @group.Orders.Count đơn mới nhất, tối đa 50 đơn trong mỗi nhóm.</p><a href="@(Url.Action("History", "Order", new { area = "", q = Model.Q, status = Model.SelectedStatus }) + "#" + groupId)">Thu gọn <span aria-hidden="true">↑</span></a></div>
+                    }
+                </section>
+            }
+        </div>
+    }
+</div>

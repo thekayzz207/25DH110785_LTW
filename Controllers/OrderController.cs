@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
@@ -18,7 +20,6 @@ namespace LTW_25DH110785.Controllers
         {
             var cart=CartService.Read(db,Session); if(cart.Items.Count==0) return RedirectToAction("Index","Cart");
             var c=db.Customers.SingleOrDefault(x=>x.Username==User.Identity.Name); if(c==null) return HttpNotFound();
-            // A session token handles repeated submits; the anti-forgery token handles CSRF.
             var token=Guid.NewGuid().ToString("N"); Session["CheckoutToken"]=token;
             var model = new CheckoutVM { CustomerName=c.CustomerName,CustomerPhone=c.CustomerPhone,AddressDelivery=c.CustomerAddress,Cart=cart,CheckoutToken=token,PaymentMethod="COD" };
             PopulatePayment(model);
@@ -33,7 +34,6 @@ namespace LTW_25DH110785.Controllers
             { TempData["Error"]="Phiên đặt hàng đã thay đổi. Vui lòng kiểm tra và xác nhận lại."; return RedirectToAction("Checkout"); }
             var c=db.Customers.SingleOrDefault(x=>x.Username==User.Identity.Name); if(c==null) return HttpNotFound();
             model.CustomerName=c.CustomerName; model.CustomerPhone=c.CustomerPhone;
-            // Availability comes from the configured local QR, never posted form values.
             PopulatePayment(model);
             if (model.PaymentMethod == "BankTransfer" && !model.BankTransferAvailable)
                 ModelState.AddModelError("PaymentMethod", "Chuyển khoản tạm chưa khả dụng. Vui lòng chọn thanh toán khi nhận hàng.");
@@ -45,7 +45,6 @@ namespace LTW_25DH110785.Controllers
                 try
                 {
                     var order=new Order { CustomerID=c.CustomerID,OrderDate=DateTime.UtcNow,AddressDelivery=model.AddressDelivery.Trim(),PaymentMethod=model.PaymentMethod,PaymentStatus="Unpaid",OrderStatus="Pending" };
-                    // Lock rows in a stable order. Re-read availability and prices inside the transaction.
                     foreach(var line in cart.OrderBy(x=>x.Key))
                     {
                         var p=db.Products.SqlQuery("SELECT * FROM dbo.Product WITH (UPDLOCK,HOLDLOCK) WHERE ProductID=@id",new SqlParameter("@id",line.Key)).SingleOrDefault();
@@ -63,9 +62,48 @@ namespace LTW_25DH110785.Controllers
                 catch(SqlException) { tx.Rollback(); TempData["Error"]="Có giao dịch đồng thời. Vui lòng thử đặt hàng lại."; return RedirectToAction("Index","Cart"); }
             }
         }
-        public ActionResult History()
+        public ActionResult History(string q, string status = "all", string expanded = null)
         {
-            return View(db.Orders.AsNoTracking().Where(x=>x.Customer.Username==User.Identity.Name).OrderByDescending(x=>x.OrderID).ToList());
+            q = OrderHistoryQuery.NormalizeSearch(q);
+            status = OrderHistoryQuery.NormalizeStatus(status);
+            expanded = OrderHistoryQuery.NormalizeExpanded(expanded);
+            var owned = OrderHistoryQuery.Owned(db.Orders.AsNoTracking(), User.Identity.Name);
+            var model = new MyOrderVM
+            {
+                Q = q,
+                SelectedStatus = status,
+                HasAnyOrders = owned.Any(),
+                Tabs = new List<MyOrderTabVM>
+                {
+                    new MyOrderTabVM { Key = "all", Label = "Tất cả" },
+                    new MyOrderTabVM { Key = "awaiting-payment", Label = "Chờ thanh toán" },
+                    new MyOrderTabVM { Key = "processing", Label = "Đang xử lý" },
+                    new MyOrderTabVM { Key = "shipping", Label = "Đang vận chuyển" },
+                    new MyOrderTabVM { Key = "delivered", Label = "Đã giao" },
+                    new MyOrderTabVM { Key = "cancelled", Label = "Đã hủy" }
+                }
+            };
+            if (!model.HasAnyOrders) return View("MyOrder", model);
+
+            var searched = OrderHistoryQuery.Search(owned, q);
+            model.MatchedCount = searched.Count();
+            foreach (var tab in model.Tabs)
+            {
+                tab.Count = tab.Key == "all" ? model.MatchedCount : OrderHistoryQuery.Bucket(searched, tab.Key).Count();
+                if (tab.Key == "all" || tab.Count == 0 || (status != "all" && status != tab.Key)) continue;
+                var isExpanded = expanded == tab.Key;
+                var orders = OrderHistoryQuery.Slice(searched, tab.Key, isExpanded)
+                    .Include(order => order.OrderDetails.Select(line => line.Product)).ToList();
+                model.Groups.Add(new MyOrderGroupVM
+                {
+                    Key = tab.Key,
+                    Label = tab.Label,
+                    TotalCount = tab.Count,
+                    IsExpanded = isExpanded,
+                    Orders = orders
+                });
+            }
+            return View("MyOrder", model);
         }
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Cancel(int id)
@@ -76,7 +114,6 @@ namespace LTW_25DH110785.Controllers
             {
                 using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
                 {
-                    // Ownership and state are checked under the same lock as admin updates.
                     var order = db.Orders.SqlQuery(
                         "SELECT * FROM [dbo].[Order] WITH (UPDLOCK,HOLDLOCK) WHERE [OrderID]=@p0 AND [CustomerID]=@p1",
                         id, customer.CustomerID).SingleOrDefault();
@@ -99,7 +136,6 @@ namespace LTW_25DH110785.Controllers
                             line.Quantity, line.ProductID);
                     }
                     order.OrderStatus = "Cancelled";
-                    // Cancellation never erases a payment record or triggers a bank refund.
                     db.SaveChanges();
                     tx.Commit();
                     TempData["Success"] = order.PaymentStatus == "Paid"
@@ -136,5 +172,89 @@ namespace LTW_25DH110785.Controllers
         public ActionResult Details(int id) { var order=OwnedOrder(id); if (order==null) return HttpNotFound(); PopulateOrderPayment(); return View(order); }
         public ActionResult Success(int id) { var order=OwnedOrder(id); if (order==null) return HttpNotFound(); PopulateOrderPayment(); return View(order); }
         protected override void Dispose(bool disposing) { if(disposing) db.Dispose(); base.Dispose(disposing); }
+    }
+
+    public static class OrderHistoryQuery
+    {
+        public const int SearchLimit = 200;
+        public const int PreviewLimit = 2;
+        public const int ExpandedLimit = 50;
+
+        public static string NormalizeSearch(string q)
+        {
+            q = (q ?? "").Trim();
+            return q.Length <= SearchLimit ? q : q.Substring(0, SearchLimit).TrimEnd();
+        }
+
+        public static string NormalizeStatus(string status)
+        {
+            var key = (status ?? "all").Trim().ToLowerInvariant();
+            switch (key)
+            {
+                case "all": case "awaiting-payment": case "processing":
+                case "shipping": case "delivered": case "cancelled": return key;
+                default: return "all";
+            }
+        }
+
+        public static string NormalizeExpanded(string expanded)
+        {
+            var key = NormalizeStatus(expanded);
+            return key == "all" ? null : key;
+        }
+
+        public static int? ParseOrderId(string q)
+        {
+            var code = NormalizeSearch(q);
+            if (code.StartsWith("#", StringComparison.Ordinal)) code = code.Substring(1);
+            if (code.StartsWith("NX-", StringComparison.OrdinalIgnoreCase)) code = code.Substring(3);
+            else if (code.StartsWith("AKS", StringComparison.OrdinalIgnoreCase)) code = code.Substring(3);
+            int id;
+            return int.TryParse(code, NumberStyles.None, CultureInfo.InvariantCulture, out id) && id > 0 ? (int?)id : null;
+        }
+
+        public static IQueryable<Order> Owned(IQueryable<Order> orders, string username)
+        {
+            if (string.IsNullOrEmpty(username)) return orders.Where(order => false);
+            return orders.Where(order => order.Customer.Username == username);
+        }
+
+        public static IQueryable<Order> Search(IQueryable<Order> ownedOrders, string q)
+        {
+            q = NormalizeSearch(q);
+            if (q.Length == 0) return ownedOrders;
+            var parsedId = ParseOrderId(q);
+            if (parsedId.HasValue)
+            {
+                var id = parsedId.Value;
+                return ownedOrders.Where(order => order.OrderID == id ||
+                    order.OrderDetails.Any(line => line.Product.ProductName.Contains(q)));
+            }
+            return ownedOrders.Where(order => order.OrderDetails.Any(line => line.Product.ProductName.Contains(q)));
+        }
+
+        public static IQueryable<Order> Bucket(IQueryable<Order> ownedOrders, string key)
+        {
+            switch (key)
+            {
+                case "all": return ownedOrders;
+                case "awaiting-payment":
+                    return ownedOrders.Where(order => (order.OrderStatus == "Pending" || order.OrderStatus == "Processing") &&
+                        order.PaymentMethod == "BankTransfer" && order.PaymentStatus == "Unpaid");
+                case "processing":
+                    return ownedOrders.Where(order => (order.OrderStatus == "Pending" || order.OrderStatus == "Processing") &&
+                        (order.PaymentMethod != "BankTransfer" || order.PaymentStatus != "Unpaid"));
+                case "shipping": return ownedOrders.Where(order => order.OrderStatus == "Shipping");
+                case "delivered": return ownedOrders.Where(order => order.OrderStatus == "Delivered");
+                case "cancelled": return ownedOrders.Where(order => order.OrderStatus == "Cancelled");
+                default: return ownedOrders.Where(order => false);
+            }
+        }
+
+        public static IQueryable<Order> Slice(IQueryable<Order> ownedOrders, string key, bool isExpanded)
+        {
+            return Bucket(ownedOrders, key).OrderByDescending(order => order.OrderDate)
+                .ThenByDescending(order => order.OrderID).Take(isExpanded ? ExpandedLimit : PreviewLimit);
+        }
     }
 }

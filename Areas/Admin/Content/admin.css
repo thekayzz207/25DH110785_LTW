@@ -797,7 +797,6 @@ textarea:focus {
   }
 }
 
-/* Keep the longer store name and ordinary local font readable on small screens. */
 .store-label {
   min-width: 0;
   font-size: 10px;

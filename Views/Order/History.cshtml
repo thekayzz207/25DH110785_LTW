@@ -3,7 +3,7 @@
 @{ ViewBag.Title = "Lịch sử mua hàng"; }
 <div class="container page-space">
     <div class="page-heading"><span class="eyebrow">TÀI KHOẢN ANHKHOASTORE</span><h1>Đơn hàng của bạn<span>.</span></h1><p>Theo dõi các đơn hàng và xem lại những linh kiện đã mua.</p></div>
-    <nav class="account-tabs"><a href="@Url.Action("Profile", "Account")">Hồ sơ</a><a href="@Url.Action("ChangePassword", "Account")">Đổi mật khẩu</a><a class="active" href="@Url.Action("History")">Đơn hàng</a></nav>
+    <nav class="account-tabs"><a href="@Url.Action("Profile", "Account")">Hồ sơ</a><a href="@Url.Action("ChangePassword", "Account")">Đổi mật khẩu</a><a class="active" href="@Url.Action("History")">Đơn hàng của bạn</a></nav>
     @if (Model.Count == 0)
     {
         <div class="empty-state panel"><span class="empty-icon">▤</span><h2>Bạn chưa có đơn hàng nào</h2><p>Những linh kiện cho bản nâng cấp tiếp theo đang chờ bạn.</p><a class="button primary" href="@Url.Action("Index", "Home")">Khám phá linh kiện ↗</a></div>

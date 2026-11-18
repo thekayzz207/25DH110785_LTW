@@ -14,7 +14,6 @@ BEGIN TRY
 
     IF COL_LENGTH(N'dbo.[Order]', N'PaymentMethod') IS NULL
     BEGIN
-        -- Dynamic SQL tránh lỗi biên dịch tham chiếu cột chưa tồn tại.
         EXEC(N'ALTER TABLE [dbo].[Order]
             ADD [PaymentMethod] NVARCHAR(20) NOT NULL
                 CONSTRAINT [DF_Order_PaymentMethod] DEFAULT (N''COD'') WITH VALUES;');

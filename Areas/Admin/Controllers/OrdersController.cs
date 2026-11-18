@@ -48,7 +48,6 @@ namespace LTW_25DH110785.Areas.Admin.Controllers
             {
                 using (var transaction = db.Database.BeginTransaction(IsolationLevel.Serializable))
                 {
-                    // Lock before checking the state so two cancellation requests cannot both restock.
                     var order = db.Orders.SqlQuery("SELECT * FROM [dbo].[Order] WITH (UPDLOCK,HOLDLOCK) WHERE [OrderID] = @p0", id).SingleOrDefault();
                     if (order == null) return HttpNotFound();
                     bool allowed = PaymentRules.CanChangeStatus(order, status);
@@ -68,8 +67,7 @@ namespace LTW_25DH110785.Areas.Admin.Controllers
                         }
                     }
                     order.OrderStatus = status;
-                    // A status change must never erase a bank payment already verified by an admin.
-                    // COD is collected at delivery; a QR scan does not verify a bank receipt.
+
                     order.PaymentStatus = PaymentRules.PaymentStatusAfterTransition(order, status);
                     db.SaveChanges();
                     transaction.Commit();
@@ -95,7 +93,7 @@ namespace LTW_25DH110785.Areas.Admin.Controllers
             {
                 using (var transaction = db.Database.BeginTransaction(IsolationLevel.Serializable))
                 {
-                    // The order lock makes confirmation and cancellation mutually consistent.
+
                     var order = db.Orders.SqlQuery("SELECT * FROM [dbo].[Order] WITH (UPDLOCK,HOLDLOCK) WHERE [OrderID] = @p0", id).SingleOrDefault();
                     if (order == null) return HttpNotFound();
                     if (order.PaymentMethod != "BankTransfer")
@@ -119,8 +117,7 @@ namespace LTW_25DH110785.Areas.Admin.Controllers
                         TempData["Success"] = "Đơn hàng đã được xác nhận thanh toán trước đó; không có thay đổi thêm.";
                         return RedirectToAction("Details", new { id });
                     }
-                    // This admin-only POST represents an explicit check of the actual bank receipt.
-                    // It does not call a bank API and does not change fulfillment status.
+
                     order.PaymentStatus = "Paid";
                     db.SaveChanges();
                     transaction.Commit();

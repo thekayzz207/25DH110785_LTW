@@ -36,7 +36,6 @@ namespace LTW_25DH110785.Areas.Admin.Models
     public class ProductFormVM
     {
         public int ProductID { get; set; }
-        // SQL Server rowversion, transported as base64 for optimistic concurrency.
         public string RowVersionToken { get; set; }
         [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn danh mục.")]
         [Display(Name = "Danh mục")]

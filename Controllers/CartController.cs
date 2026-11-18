@@ -22,7 +22,6 @@ namespace LTW_25DH110785.Controllers
 
             if (Request.IsAjaxRequest())
             {
-                // AJAX stays on the current page; no flash message is left for later navigation.
                 return Json(new { success, message, cartCount = cart.Values.Sum() });
             }
 

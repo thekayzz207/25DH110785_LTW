@@ -15,7 +15,7 @@
                 else
                 {
                     <a class="account-menu__item" href="@Url.Action("Profile", "Account", new { area = "" })">Thông tin cá nhân</a>
-                    <a class="account-menu__item" href="@Url.Action("History", "Order", new { area = "" })">Đơn hàng của tôi</a>
+                    <a class="account-menu__item" href="@Url.Action("History", "Order", new { area = "" })">Lịch sử mua hàng</a>
                 }
                 @using (Html.BeginForm("Logout", "Account", new { area = "" }, FormMethod.Post, new { @class = "account-menu__logout" }))
                 {

@@ -1,5 +1,60 @@
-﻿@model LTW_25DH110785.Areas.Admin.Models.PagedListVM<LTW_25DH110785.Models.Order>
-@{ ViewBag.Title = "Đơn hàng"; int? customerId = ViewBag.CustomerId as int?; }
-<div class="page-heading"><div><p class="eyebrow">VẬN HÀNH CỬA HÀNG</p><h1>Đơn hàng<span>.</span></h1><p>@Model.TotalItems đơn hàng @(customerId.HasValue ? "của khách hàng #" + customerId.Value : "trong hệ thống").</p></div>@if (customerId.HasValue) { <a class="button secondary" href="@Url.Action("Index", "Orders", new { area = "Admin" })">Xem tất cả đơn</a> }</div>
-<section class="panel"><form class="filterbar" method="get" action="@Url.Action("Index", "Orders", new { area = "Admin" })">@if (customerId.HasValue) { <input type="hidden" name="customerId" value="@customerId.Value"/> }<label class="search-field"><span class="sr-only">Tìm đơn hàng</span><input name="q" value="@Model.Q" placeholder="Mã đơn, tên khách hoặc số điện thoại…"/></label><label><span class="sr-only">Sắp xếp đơn hàng</span>@Html.DropDownList("sort", new[] { new SelectListItem { Text = "Mới nhất", Value = "newest", Selected = Model.Sort == "newest" }, new SelectListItem { Text = "Cũ nhất", Value = "oldest", Selected = Model.Sort == "oldest" }, new SelectListItem { Text = "Giá trị giảm dần", Value = "total_desc", Selected = Model.Sort == "total_desc" }, new SelectListItem { Text = "Giá trị tăng dần", Value = "total_asc", Selected = Model.Sort == "total_asc" } })</label><button class="button secondary" type="submit">Tìm kiếm</button></form><div class="table-scroll"><table><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Ngày đặt</th><th>Trạng thái</th><th>Phương thức / Thanh toán</th><th class="right">Tổng tiền</th><th></th></tr></thead><tbody>@foreach (var item in Model.Items) { <tr><td class="strong">#NX-@item.OrderID.ToString("D5")</td><td>@(item.Customer != null ? item.Customer.CustomerName : "—")</td><td>@item.OrderDate.AddHours(7).ToString("dd/MM/yyyy")</td><td><span class="badge @(item.OrderStatus == "Delivered" ? "good" : item.OrderStatus == "Cancelled" ? "danger" : "")">@StatusName(item.OrderStatus)</span></td><td><span>@PaymentMethodName(item.PaymentMethod)</span><small class="cell-small"><span class="badge @(item.PaymentStatus == "Paid" ? "good" : "")">@(item.PaymentStatus == "Paid" ? "Đã thanh toán" : "Chưa thanh toán")</span></small>@if (item.OrderStatus == "Cancelled" && item.PaymentStatus == "Paid") { <small class="cell-small"><strong>Cần xử lý hoàn tiền</strong></small> }</td><td class="right strong">@item.TotalAmount.ToString("N0") ₫</td><td><a class="button small secondary" href="@Url.Action("Details", "Orders", new { area = "Admin", id = item.OrderID })">Chi tiết →</a></td></tr> }@if (!Model.Items.Any()) { <tr><td colspan="7" class="empty">Không có đơn hàng phù hợp.</td></tr> }</tbody></table></div><div class="pagination"><span>Trang @Model.Page / @Model.TotalPages</span><nav aria-label="Phân trang đơn hàng">@if (Model.Page > 1) { <a href="@Url.Action("Index", new { area = "Admin", q = Model.Q, sort = Model.Sort, customerId = customerId, page = Model.Page - 1 })">← Trước</a> }@for (int p = Math.Max(1, Model.Page - 2); p <= Math.Min(Model.TotalPages, Model.Page + 2); p++) { <a class="@(p == Model.Page ? "current" : "")" href="@Url.Action("Index", new { area = "Admin", q = Model.Q, sort = Model.Sort, customerId = customerId, page = p })">@p</a> }@if (Model.Page < Model.TotalPages) { <a href="@Url.Action("Index", new { area = "Admin", q = Model.Q, sort = Model.Sort, customerId = customerId, page = Model.Page + 1 })">Sau →</a> }</nav></div></section>
-@functions { public string PaymentMethodName(string method) { switch (method) { case "COD": return "Thu tiền khi nhận hàng (COD)"; case "BankTransfer": return "Chuyển khoản ngân hàng"; default: return "Chưa xác định"; } } public string StatusName(string s) { switch (s) { case "Pending": return "Chờ xác nhận"; case "Processing": return "Đang xử lý"; case "Shipping": return "Đang giao"; case "Delivered": return "Đã giao"; case "Cancelled": return "Đã hủy"; default: return s; } } }
+﻿@model LTW_25DH110785.Areas.Admin.Models.AdminOrderListVM
+@using System.Globalization
+@{
+    ViewBag.Title = "Quản lý đơn hàng";
+    var vi = CultureInfo.GetCultureInfo("vi-VN");
+    var validPaymentFilter = Model.PaymentStatus == "all" || Model.PaymentStatus == "Paid" || Model.PaymentStatus == "Unpaid";
+    var hasFilters = Model.CustomerId.HasValue || !string.IsNullOrWhiteSpace(Model.Q) || !string.IsNullOrWhiteSpace(Model.OrderDate) || Model.PaymentStatus != "all";
+}
+<div class="admin-orders-page">
+    <div class="page-heading"><div><p class="eyebrow">VẬN HÀNH CỬA HÀNG</p><h1>Quản lý đơn hàng<span>.</span></h1><p>@Model.TotalItems đơn hàng @(Model.CustomerId.HasValue ? "của khách hàng #" + Model.CustomerId.Value : "trong kết quả hiện tại").</p></div>
+        @if (Model.CustomerId.HasValue)
+        {
+            <a class="button secondary" href="@Url.Action("Index", "Orders", new { area = "Admin", customerId = (int?)null, q = Model.Q, sort = Model.Sort, paymentStatus = Model.PaymentStatus, orderDate = Model.OrderDate })">Xem đơn của tất cả khách hàng</a>
+        }
+    </div>
+    <section class="panel admin-orders-filter-panel">
+        @Html.ValidationSummary(false, "Vui lòng kiểm tra bộ lọc.", new { @class = "admin-orders-validation" })
+        <form class="admin-orders-filters" method="get" action="@Url.Action("Index", "Orders", new { area = "Admin" })">
+            @if (Model.CustomerId.HasValue) { <input type="hidden" name="customerId" value="@Model.CustomerId.Value" /> }
+            <div class="admin-orders-filter-field admin-orders-filter-search"><label for="admin-orders-q">Khách hàng / mã đơn / số điện thoại</label><input id="admin-orders-q" type="search" name="q" value="@Model.Q" maxlength="200" placeholder="Nhập tên khách hàng, mã đơn hoặc số điện thoại" /></div>
+            <div class="admin-orders-filter-field"><label for="admin-orders-payment">Trạng thái thanh toán</label><select id="admin-orders-payment" name="paymentStatus">
+                @if (!validPaymentFilter) { <option value="@Model.PaymentStatus" selected="selected">Giá trị không hợp lệ: @Model.PaymentStatus</option> }
+                <option value="all" selected="@(Model.PaymentStatus == "all" ? "selected" : null)">Tất cả</option><option value="Paid" selected="@(Model.PaymentStatus == "Paid" ? "selected" : null)">Đã thanh toán</option><option value="Unpaid" selected="@(Model.PaymentStatus == "Unpaid" ? "selected" : null)">Chưa thanh toán</option>
+            </select></div>
+            <div class="admin-orders-filter-field"><label for="admin-orders-date">Ngày đặt hàng</label><input id="admin-orders-date" type="date" name="orderDate" value="@Model.OrderDate" aria-describedby="admin-orders-date-help" /><small id="admin-orders-date-help">Lọc đúng ngày tại Việt Nam (UTC+7), định dạng yyyy-MM-dd.</small>
+                @if (!string.IsNullOrWhiteSpace(Model.OrderDate) && !ViewData.ModelState.IsValid) { <small class="admin-orders-invalid-value">Giá trị ngày đang lọc: @Model.OrderDate</small> }
+            </div>
+            <div class="admin-orders-filter-field"><label for="admin-orders-sort">Sắp xếp</label><select id="admin-orders-sort" name="sort"><option value="newest" selected="@(Model.Sort == "newest" ? "selected" : null)">Mới nhất</option><option value="oldest" selected="@(Model.Sort == "oldest" ? "selected" : null)">Cũ nhất</option><option value="total_desc" selected="@(Model.Sort == "total_desc" ? "selected" : null)">Giá trị giảm dần</option><option value="total_asc" selected="@(Model.Sort == "total_asc" ? "selected" : null)">Giá trị tăng dần</option></select></div>
+            <div class="admin-orders-filter-actions"><button class="button primary" type="submit">Lọc đơn hàng</button><a class="button secondary" href="@Url.Action("Index", "Orders", new { area = "Admin", customerId = Model.CustomerId })">Xóa bộ lọc</a><span>15 đơn hàng / trang</span></div>
+        </form>
+    </section>
+    <section class="panel admin-orders-list-panel">
+        <div class="table-scroll"><table><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Ngày đặt (UTC+7)</th><th>Trạng thái đơn</th><th>Phương thức / Thanh toán</th><th class="right">Tổng tiền</th><th>Thao tác</th></tr></thead><tbody>
+            @foreach (var order in Model.Items)
+            {
+                <tr><td class="strong">NX-@order.OrderID.ToString("D6")</td><td><a class="admin-orders-customer-link" href="@Url.Action("Index", "Orders", new { area = "Admin", customerId = order.CustomerID, q = Model.Q, sort = Model.Sort, paymentStatus = Model.PaymentStatus, orderDate = Model.OrderDate })">@(order.Customer == null ? "Khách hàng #" + order.CustomerID : order.Customer.CustomerName)</a>@if (order.Customer != null) { <small class="cell-small">@order.Customer.CustomerPhone</small> }</td><td>@order.OrderDate.AddHours(7).ToString("dd/MM/yyyy HH:mm")</td><td><span class="badge @(order.OrderStatus == "Delivered" ? "good" : order.OrderStatus == "Cancelled" ? "danger" : "")">@StatusName(order.OrderStatus)</span></td><td>@PaymentMethodName(order.PaymentMethod)<small class="cell-small"><span class="badge @(order.PaymentStatus == "Paid" ? "good" : "")">@(order.PaymentStatus == "Paid" ? "Đã thanh toán" : "Chưa thanh toán")</span></small>@if (order.OrderStatus == "Cancelled" && order.PaymentStatus == "Paid") { <small class="cell-small admin-orders-refund-note">Cần xử lý hoàn tiền</small> }</td><td class="right strong">@order.TotalAmount.ToString("N0", vi) ₫</td><td><a class="button small secondary" href="@Url.Action("Details", "Orders", new { area = "Admin", id = order.OrderID })">Chi tiết →</a></td></tr>
+            }
+            @if (!Model.Items.Any())
+            {
+                <tr><td colspan="7"><div class="admin-orders-empty"><strong>KHÔNG CÓ</strong><p>@(!ViewData.ModelState.IsValid ? "Thông tin lọc chưa hợp lệ. Vui lòng sửa bộ lọc và tìm lại." : hasFilters ? "Không có đơn hàng khớp với khách hàng, trạng thái thanh toán và ngày đã chọn." : "Chưa có đơn hàng trong hệ thống.")</p></div></td></tr>
+            }
+        </tbody></table></div>
+        <div class="pagination"><span>Trang @Model.Page / @Math.Max(1, Model.TotalPages)</span><nav aria-label="Phân trang đơn hàng">
+            @if (Model.Page > 1) { <a href="@Url.Action("Index", "Orders", new { area = "Admin", q = Model.Q, sort = Model.Sort, customerId = Model.CustomerId, paymentStatus = Model.PaymentStatus, orderDate = Model.OrderDate, page = Model.Page - 1 })">← Trước</a> }
+            @for (var page = Math.Max(1, Model.Page - 2); page <= Math.Min(Model.TotalPages, Model.Page + 2); page++) { <a class="@(page == Model.Page ? "current" : "")" aria-current="@(page == Model.Page ? "page" : null)" href="@Url.Action("Index", "Orders", new { area = "Admin", q = Model.Q, sort = Model.Sort, customerId = Model.CustomerId, paymentStatus = Model.PaymentStatus, orderDate = Model.OrderDate, page = page })">@page</a> }
+            @if (Model.Page < Model.TotalPages) { <a href="@Url.Action("Index", "Orders", new { area = "Admin", q = Model.Q, sort = Model.Sort, customerId = Model.CustomerId, paymentStatus = Model.PaymentStatus, orderDate = Model.OrderDate, page = Model.Page + 1 })">Sau →</a> }
+        </nav></div>
+    </section>
+</div>
+
+@functions {
+    public string PaymentMethodName(string method)
+    {
+        switch (method) { case "COD": return "Thanh toán khi nhận hàng (COD)"; case "BankTransfer": return "Chuyển khoản ngân hàng"; default: return "Chưa xác định"; }
+    }
+    public string StatusName(string status)
+    {
+        switch (status) { case "Pending": return "Chờ xác nhận"; case "Processing": return "Đang xử lý"; case "Shipping": return "Đang giao"; case "Delivered": return "Đã giao"; case "Cancelled": return "Đã hủy"; default: return status; }
+    }
+}

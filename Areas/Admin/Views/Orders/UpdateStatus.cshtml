@@ -1,0 +1,63 @@
+﻿@model LTW_25DH110785.Models.Order
+@using LTW_25DH110785.Services
+@{
+    ViewBag.Title = "Cập nhật trạng thái đơn hàng";
+    var candidateStatuses = new[] { "Processing", "Shipping", "Delivered", "Cancelled" };
+    var eligibleStatuses = candidateStatuses.Where(s => PaymentRules.CanChangeStatus(Model, s)).ToList();
+    var isCod = Model.PaymentMethod == "COD";
+    var unpaidBank = Model.PaymentMethod == "BankTransfer" && Model.PaymentStatus != "Paid" && Model.OrderStatus != "Cancelled";
+}
+<div class="admin-orders-page admin-orders-update">
+    <div class="page-heading"><div><p class="eyebrow">QUẢN LÝ ĐƠN HÀNG</p><h1>Cập nhật trạng thái<span>.</span></h1><p>Đơn NX-@Model.OrderID.ToString("D6")</p></div><a class="button secondary" href="@Url.Action("Details", "Orders", new { area = "Admin", id = Model.OrderID })">← Về chi tiết đơn hàng</a></div>
+    <section class="panel padded admin-orders-update-panel">
+        @Html.ValidationSummary(false, "Chưa thể cập nhật trạng thái.", new { @class = "admin-orders-validation" })
+        <h2>Trạng thái hiện tại</h2><dl class="info-list"><div><dt>Đơn hàng</dt><dd><strong>NX-@Model.OrderID.ToString("D6")</strong></dd></div><div><dt>Trạng thái</dt><dd><span class="badge @(Model.OrderStatus == "Delivered" ? "good" : Model.OrderStatus == "Cancelled" ? "danger" : "")">@StatusName(Model.OrderStatus)</span></dd></div><div><dt>Phương thức</dt><dd>@PaymentMethodName(Model.PaymentMethod)</dd></div><div><dt>Thanh toán</dt><dd>@(Model.PaymentStatus == "Paid" ? "Đã thanh toán" : "Chưa thanh toán")</dd></div></dl>
+        @if (unpaidBank)
+        {
+            <div class="notice error admin-orders-status-notice" role="status"><strong>Chờ xác minh tiền chuyển khoản.</strong><p>Chỉ chuyển sang xử lý, đang giao hoặc đã giao sau khi xác nhận đã thực nhận đủ tiền.</p><a class="admin-orders-inline-link" href="@Url.Action("Details", "Orders", new { area = "Admin", id = Model.OrderID })">Về chi tiết đơn để đối soát và xác nhận thanh toán →</a></div>
+        }
+        @if (Model.OrderStatus == "Cancelled" && Model.PaymentStatus == "Paid")
+        {
+            <div class="notice error admin-orders-status-notice" role="alert"><strong>Đơn đã hủy và đã thanh toán.</strong><p>Cần đối chiếu và xử lý hoàn tiền riêng. Hệ thống giữ nguyên trạng thái thanh toán và không tự động hoàn tiền.</p></div>
+        }
+        @if (eligibleStatuses.Any())
+        {
+            using (Html.BeginForm("UpdateStatus", "Orders", new { area = "Admin", id = Model.OrderID }, FormMethod.Post, new { @class = "admin-orders-status-form" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="field"><label for="admin-orders-next-status">Trạng thái tiếp theo</label><select name="status" id="admin-orders-next-status" required="required"><option value="" disabled="disabled" selected="selected">Chọn trạng thái cần cập nhật</option>
+                    @foreach (var nextStatus in eligibleStatuses) { <option value="@nextStatus">@(isCod && nextStatus == "Delivered" ? "Đã giao và thu tiền COD" : StatusName(nextStatus))</option> }
+                </select></div>
+                <p class="form-note">Hủy đơn sẽ hoàn lại tồn kho. Nếu đã nhận tiền, trạng thái thanh toán được giữ nguyên và quản trị viên cần xử lý hoàn tiền riêng.</p>
+                if (isCod)
+                {
+                    <p class="form-note">Với COD, xác nhận đã giao đồng thời ghi nhận đã thu tiền từ khách hàng.</p>
+                }
+                if (Model.PaymentStatus == "Paid" && eligibleStatuses.Contains("Cancelled"))
+                {
+                    <p class="admin-orders-refund-note"><strong>Đơn đã thanh toán: thao tác hủy không tự động hoàn tiền ngân hàng.</strong></p>
+                }
+                <div class="admin-orders-status-actions"><button class="button primary" type="submit">Cập nhật trạng thái →</button><a class="button secondary" href="@Url.Action("Details", "Orders", new { area = "Admin", id = Model.OrderID })">Quay lại</a></div>
+            }
+        }
+        else if (Model.OrderStatus == "Delivered" || Model.OrderStatus == "Cancelled")
+        {
+            <p class="admin-orders-status-finished">Đơn hàng đã kết thúc, không thể chuyển trạng thái.</p>
+        }
+        else
+        {
+            <p class="admin-orders-status-finished">Không có trạng thái tiếp theo phù hợp. Vui lòng kiểm tra phương thức thanh toán và đối soát tiền tại trang chi tiết đơn hàng.</p>
+        }
+    </section>
+</div>
+
+@functions {
+    public string PaymentMethodName(string method)
+    {
+        switch (method) { case "COD": return "Thanh toán khi nhận hàng (COD)"; case "BankTransfer": return "Chuyển khoản ngân hàng"; default: return "Chưa xác định"; }
+    }
+    public string StatusName(string status)
+    {
+        switch (status) { case "Pending": return "Chờ xác nhận"; case "Processing": return "Đang xử lý"; case "Shipping": return "Đang giao"; case "Delivered": return "Đã giao"; case "Cancelled": return "Đã hủy"; default: return status; }
+    }
+}

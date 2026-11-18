@@ -5,14 +5,16 @@
     bool isCod = Model.PaymentMethod == "COD";
     bool isPaid = Model.PaymentStatus == "Paid";
     bool isCancelled = Model.OrderStatus == "Cancelled";
-    bool canCancel = Model.OrderStatus == "Pending" || Model.OrderStatus == "Processing";
-    bool canAdvance = (isCod || (isBankTransfer && isPaid)) &&
-        (Model.OrderStatus == "Pending" || Model.OrderStatus == "Processing" || Model.OrderStatus == "Shipping");
+    bool canChangeStatus = LTW_25DH110785.Services.PaymentRules.CanChangeStatus(Model, "Processing")
+        || LTW_25DH110785.Services.PaymentRules.CanChangeStatus(Model, "Shipping")
+        || LTW_25DH110785.Services.PaymentRules.CanChangeStatus(Model, "Delivered")
+        || LTW_25DH110785.Services.PaymentRules.CanChangeStatus(Model, "Cancelled");
 }
+<div class="admin-orders-page admin-orders-detail">
 <div class="page-heading">
     <div>
         <p class="eyebrow">ĐƠN HÀNG / @Model.OrderDate.AddHours(7).ToString("dd.MM.yyyy HH:mm") (UTC+7)</p>
-        <h1>#NX-@Model.OrderID.ToString("D5")<span>.</span></h1>
+        <h1>#NX-@Model.OrderID.ToString("D6")<span>.</span></h1>
         <p><span class="badge">@StatusName(Model.OrderStatus)</span> · @PaymentMethodName(Model.PaymentMethod)</p>
     </div>
     <a class="button secondary" href="@Url.Action("Index", "Orders", new { area = "Admin", customerId = Model.CustomerID })">← Đơn của khách hàng</a>
@@ -35,32 +37,20 @@
             <div><dt>Thanh toán</dt><dd><span class="badge @(isPaid ? "good" : "")">@(isPaid ? "Đã thanh toán" : "Chưa thanh toán")</span></dd></div>
         </dl>
     </section>
-    <section class="panel padded">
+    <section class="panel padded admin-orders-status-card">
         <h2>Cập nhật trạng thái</h2>
         @if (isBankTransfer && !isPaid && !isCancelled)
         {
             <div class="notice error" role="status"><strong>Chờ xác minh tiền chuyển khoản.</strong><p>Chỉ chuyển sang xử lý, đang giao hoặc đã giao sau khi xác nhận đã thực nhận đủ tiền.</p></div>
         }
-        @if (canAdvance || canCancel)
+        @if (canChangeStatus)
         {
-            using (Html.BeginForm("UpdateStatus", "Orders", new { area = "Admin", id = Model.OrderID }, FormMethod.Post))
+            <p class="form-note">Mở trang cập nhật để chọn trạng thái tiếp theo phù hợp cho đơn hàng.</p>
+            <div class="admin-orders-status-actions"><a class="button primary" href="@Url.Action("UpdateStatus", "Orders", new { area = "Admin", id = Model.OrderID })">Cập nhật trạng thái →</a></div>
+            <p class="form-note">Hủy đơn sẽ hoàn lại tồn kho. Nếu đã nhận tiền, trạng thái thanh toán được giữ nguyên và quản trị viên cần xử lý hoàn tiền riêng.</p>
+            if (isCod)
             {
-                @Html.AntiForgeryToken()
-                <div class="field">
-                    <label for="status">Trạng thái tiếp theo</label>
-                    <select name="status" id="status">
-                        @if (canAdvance && Model.OrderStatus == "Pending") { <option value="Processing">Đang xử lý</option> }
-                        @if (canAdvance && Model.OrderStatus == "Processing") { <option value="Shipping">Đang giao</option> }
-                        @if (canAdvance && Model.OrderStatus == "Shipping") { <option value="Delivered">@(isCod ? "Đã giao và thu tiền COD" : "Đã giao")</option> }
-                        @if (canCancel) { <option value="Cancelled">Đã hủy</option> }
-                    </select>
-                </div>
-                <button class="button primary" type="submit">Cập nhật đơn hàng →</button>
-                <p class="form-note">Hủy đơn sẽ hoàn lại tồn kho. Nếu đã nhận tiền, trạng thái thanh toán được giữ nguyên và quản trị viên cần xử lý hoàn tiền riêng.</p>
-                if (isCod)
-                {
-                    <p class="form-note">Với COD, xác nhận đã giao đồng thời ghi nhận đã thu tiền từ khách hàng.</p>
-                }
+                <p class="form-note">Với COD, xác nhận đã giao đồng thời ghi nhận đã thu tiền từ khách hàng.</p>
             }
         }
         else if (isBankTransfer && !isPaid && Model.OrderStatus == "Shipping")
@@ -121,6 +111,7 @@
         </table>
     </div>
 </section>
+</div>
 @functions {
     public string PaymentMethodName(string method)
     {

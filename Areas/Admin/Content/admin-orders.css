@@ -1,0 +1,201 @@
+/* Order management pages only; ordinary local Arial and readable controls. */
+.admin-orders-page {
+  font-family: Arial, Helvetica, sans-serif;
+}
+.admin-orders-filter-panel {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.admin-orders-filters {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.8fr) minmax(165px, 1fr) minmax(
+      190px,
+      1.1fr
+    ) minmax(165px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.admin-orders-filter-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 8px;
+}
+.admin-orders-filter-field label {
+  color: #496139;
+  font:
+    700 14px/1.5 Arial,
+    Helvetica,
+    sans-serif;
+}
+.admin-orders-filter-field input,
+.admin-orders-filter-field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #d4dfc9;
+  border-radius: 6px;
+  background: #fff;
+  color: #34482a;
+  font:
+    400 16px/1.5 Arial,
+    Helvetica,
+    sans-serif;
+}
+.admin-orders-filter-field small {
+  color: #839476;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.admin-orders-filter-field .admin-orders-invalid-value {
+  color: #a05e45;
+  overflow-wrap: anywhere;
+}
+.admin-orders-filter-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.admin-orders-filter-actions > span {
+  margin-left: auto;
+  color: #8b9a7f;
+  font-size: 13px;
+}
+.admin-orders-list-panel {
+  overflow: hidden;
+}
+.admin-orders-page .admin-orders-customer-link {
+  color: #638747;
+  font-weight: 700;
+}
+.admin-orders-customer-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.admin-orders-refund-note {
+  color: #a56244;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.admin-orders-empty {
+  padding: 42px 20px;
+  text-align: center;
+}
+.admin-orders-empty > strong {
+  color: #60784d;
+  font-size: 23px;
+  line-height: 1.6;
+  font-weight: 700;
+}
+.admin-orders-empty p {
+  margin: 10px 0 0;
+  color: #87977a;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.admin-orders-page .admin-orders-validation.validation-summary-valid {
+  display: none;
+}
+.admin-orders-page .admin-orders-validation.validation-summary-errors {
+  margin-bottom: 22px;
+  border: 1px solid #edc9b9;
+  border-radius: 6px;
+  padding: 14px 18px;
+  background: #fff4ed;
+  color: #a45d40;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.admin-orders-detail > .panel,
+.admin-orders-detail > .form-note {
+  margin-top: 24px;
+}
+.admin-orders-status-card h2 {
+  margin-bottom: 18px;
+}
+.admin-orders-status-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+.admin-orders-status-notice {
+  margin-top: 24px;
+}
+.admin-orders-status-notice p {
+  line-height: 1.8;
+}
+.admin-orders-update-panel {
+  max-width: 900px;
+}
+.admin-orders-status-form {
+  margin-top: 27px;
+}
+.admin-orders-status-form .field {
+  max-width: 540px;
+}
+.admin-orders-status-form .field label {
+  font-size: 14px;
+}
+.admin-orders-status-form .field select {
+  min-height: 44px;
+  font-size: 16px;
+}
+.admin-orders-page .admin-orders-inline-link {
+  display: inline-block;
+  margin-top: 9px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.admin-orders-status-finished {
+  margin: 25px 0 0;
+  padding: 17px 18px;
+  border: 1px solid #e0e7d7;
+  border-radius: 6px;
+  background: #f7faf2;
+  color: #829174;
+  font-size: 14px;
+  line-height: 1.8;
+}
+@media (max-width: 1350px) {
+  .admin-orders-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .admin-orders-filter-panel {
+    padding: 20px 17px;
+  }
+  .admin-orders-filters {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .admin-orders-filter-actions {
+    gap: 10px;
+  }
+  .admin-orders-filter-actions > span {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+  .admin-orders-empty {
+    padding: 32px 15px;
+  }
+  .admin-orders-empty > strong {
+    font-size: 21px;
+  }
+  .admin-orders-empty p {
+    font-size: 13px;
+  }
+  .admin-orders-status-actions {
+    align-items: stretch;
+  }
+  .admin-orders-status-actions > .button {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}

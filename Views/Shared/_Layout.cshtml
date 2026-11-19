@@ -26,6 +26,7 @@
     <link href="@Url.Content("~/Content/cart-quantity.css")" rel="stylesheet" />
     <link href="@Url.Content("~/Content/account-menu.css")" rel="stylesheet" />
     <link href="@Url.Content("~/Content/my-orders.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/contact-buttons.css")" rel="stylesheet" />
 </head>
 <body>
     <a class="skip-link" href="#main-content">Chuyển đến nội dung</a>
@@ -65,5 +66,6 @@
     <script src="@Url.Content("~/Content/cart-toast.js")" defer></script>
     <script src="@Url.Content("~/Content/cart-quantity.js")" defer></script>
     <script src="@Url.Content("~/Content/account-menu.js")" defer></script>
+    @Html.Partial("_ContactButtons")
 </body>
 </html>

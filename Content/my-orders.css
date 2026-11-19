@@ -402,11 +402,15 @@
   min-width: 175px;
   text-align: center;
 }
-.my-orders-product-actions form {
+.my-orders-reorder-form {
   margin: 0;
+}
+.my-orders-reorder-form .my-orders-buy-button[hidden] {
+  display: none !important;
 }
 .my-orders-page .my-orders-buy-button {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -705,10 +709,10 @@
   }
   .my-orders-product-actions {
     grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: center;
-    gap: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
     padding-top: 1px;
   }
   .my-orders-page .my-orders-buy-button {
@@ -744,7 +748,8 @@
     padding-inline: 12px;
     font-size: 13px;
   }
-  .my-orders-cancel-form {
+  .my-orders-cancel-form,
+  .my-orders-reorder-form {
     flex: 1;
   }
   .my-orders-page .my-orders-cancel-button {
@@ -802,8 +807,5 @@
     flex-basis: 100%;
     align-items: flex-start;
     margin-left: 0;
-  }
-  .my-orders-product-actions {
-    grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -20,6 +20,7 @@ namespace LTW_25DH110785.Controllers
         {
             var cart=CartService.Read(db,Session); if(cart.Items.Count==0) return RedirectToAction("Index","Cart");
             var c=db.Customers.SingleOrDefault(x=>x.Username==User.Identity.Name); if(c==null) return HttpNotFound();
+            // A session token handles repeated submits; the anti-forgery token handles CSRF.
             var token=Guid.NewGuid().ToString("N"); Session["CheckoutToken"]=token;
             var model = new CheckoutVM { CustomerName=c.CustomerName,CustomerPhone=c.CustomerPhone,AddressDelivery=c.CustomerAddress,Cart=cart,CheckoutToken=token,PaymentMethod="COD" };
             PopulatePayment(model);
@@ -34,6 +35,7 @@ namespace LTW_25DH110785.Controllers
             { TempData["Error"]="Phiên đặt hàng đã thay đổi. Vui lòng kiểm tra và xác nhận lại."; return RedirectToAction("Checkout"); }
             var c=db.Customers.SingleOrDefault(x=>x.Username==User.Identity.Name); if(c==null) return HttpNotFound();
             model.CustomerName=c.CustomerName; model.CustomerPhone=c.CustomerPhone;
+            // Availability comes from the configured local QR, never posted form values.
             PopulatePayment(model);
             if (model.PaymentMethod == "BankTransfer" && !model.BankTransferAvailable)
                 ModelState.AddModelError("PaymentMethod", "Chuyển khoản tạm chưa khả dụng. Vui lòng chọn thanh toán khi nhận hàng.");
@@ -45,6 +47,7 @@ namespace LTW_25DH110785.Controllers
                 try
                 {
                     var order=new Order { CustomerID=c.CustomerID,OrderDate=DateTime.UtcNow,AddressDelivery=model.AddressDelivery.Trim(),PaymentMethod=model.PaymentMethod,PaymentStatus="Unpaid",OrderStatus="Pending" };
+                    // Lock rows in a stable order. Re-read availability and prices inside the transaction.
                     foreach(var line in cart.OrderBy(x=>x.Key))
                     {
                         var p=db.Products.SqlQuery("SELECT * FROM dbo.Product WITH (UPDLOCK,HOLDLOCK) WHERE ProductID=@id",new SqlParameter("@id",line.Key)).SingleOrDefault();
@@ -67,6 +70,7 @@ namespace LTW_25DH110785.Controllers
             q = OrderHistoryQuery.NormalizeSearch(q);
             status = OrderHistoryQuery.NormalizeStatus(status);
             expanded = OrderHistoryQuery.NormalizeExpanded(expanded);
+            // Every count, search and slice starts from this ownership-scoped query.
             var owned = OrderHistoryQuery.Owned(db.Orders.AsNoTracking(), User.Identity.Name);
             var model = new MyOrderVM
             {
@@ -92,6 +96,7 @@ namespace LTW_25DH110785.Controllers
                 tab.Count = tab.Key == "all" ? model.MatchedCount : OrderHistoryQuery.Bucket(searched, tab.Key).Count();
                 if (tab.Key == "all" || tab.Count == 0 || (status != "all" && status != tab.Key)) continue;
                 var isExpanded = expanded == tab.Key;
+                // Apply the limit before loading details/products; never materialize the whole history.
                 var orders = OrderHistoryQuery.Slice(searched, tab.Key, isExpanded)
                     .Include(order => order.OrderDetails.Select(line => line.Product)).ToList();
                 model.Groups.Add(new MyOrderGroupVM
@@ -105,6 +110,68 @@ namespace LTW_25DH110785.Controllers
             }
             return View("MyOrder", model);
         }
+        [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = "C")]
+        public ActionResult Reorder(int id, string requestKey, string returnUrl = null)
+        {
+            string key;
+            if (!ModelState.IsValid || id <= 0 || !CartRules.TryNormalizeReorderKey(requestKey, out key))
+                return ReorderResult(false, "Yêu cầu mua lại không hợp lệ. Vui lòng tải lại trang đơn hàng và thử lại.", returnUrl);
+
+            // The browser supplies only the order ID; stored lines and ownership come from SQL.
+            var order = OwnedOrder(id);
+            if (order == null)
+                return ReorderResult(false, "Không tìm thấy đơn hàng của bạn để mua lại.", returnUrl);
+
+            const string ledgerName = "SuccessfulReorderRequests";
+            var receipts = Session[ledgerName] as List<ReorderReceipt> ?? new List<ReorderReceipt>();
+            var previous = receipts.FirstOrDefault(receipt => receipt != null && receipt.RequestKey == key);
+            if (previous != null)
+            {
+                if (previous.OrderId != id || !string.Equals(previous.Username, User.Identity.Name, StringComparison.Ordinal))
+                    return ReorderResult(false, "Yêu cầu mua lại này đã được dùng cho đơn hàng khác. Vui lòng tải lại trang trước khi mua lại.", returnUrl);
+                return ReorderResult(true, "Đơn hàng đã được thêm vào giỏ hàng trước đó; không cộng thêm lần nữa.", returnUrl);
+            }
+
+            var storedCart = Session["Cart"];
+            var current = storedCart as Dictionary<int, int>;
+            if (storedCart != null && current == null)
+                return ReorderResult(false, "Giỏ hàng hiện tại không hợp lệ. Vui lòng kiểm tra giỏ hàng trước khi mua lại.", returnUrl);
+            current = current ?? new Dictionary<int, int>();
+            Dictionary<int, int> updated;
+            string message;
+            if (!CartRules.TryBuildReorder(current, order.OrderDetails, out updated, out message))
+                return ReorderResult(false, message, returnUrl);
+
+            // ASP.NET's writable session lock serializes competing requests in this session.
+            // A failed item never changes the original cart or consumes its request key.
+            var nextReceipts = new List<ReorderReceipt>(receipts);
+            nextReceipts.Add(new ReorderReceipt { RequestKey = key, OrderId = id, Username = User.Identity.Name });
+            while (nextReceipts.Count > 32) nextReceipts.RemoveAt(0);
+            Session["Cart"] = updated;
+            Session[ledgerName] = nextReceipts;
+            return ReorderResult(true, message, returnUrl);
+        }
+
+        private ActionResult ReorderResult(bool success, string message, string returnUrl)
+        {
+            var cart = Session["Cart"] as Dictionary<int, int>;
+            long count = cart == null ? 0L : cart.Values.Where(quantity => quantity > 0).Sum(quantity => (long)quantity);
+            int cartCount = (int)Math.Min(int.MaxValue, count);
+            if (Request.IsAjaxRequest()) return Json(new { success, message, cartCount });
+
+            TempData[success ? "Success" : "Error"] = message;
+            if (success) return RedirectToAction("Index", "Cart");
+            return Url.IsLocalUrl(returnUrl) ? (ActionResult)Redirect(returnUrl) : RedirectToAction("History");
+        }
+
+        [Serializable]
+        private sealed class ReorderReceipt
+        {
+            public string RequestKey { get; set; }
+            public int OrderId { get; set; }
+            public string Username { get; set; }
+        }
+
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Cancel(int id)
         {
@@ -114,6 +181,7 @@ namespace LTW_25DH110785.Controllers
             {
                 using (var tx = db.Database.BeginTransaction(IsolationLevel.Serializable))
                 {
+                    // Ownership and state are checked under the same lock as admin updates.
                     var order = db.Orders.SqlQuery(
                         "SELECT * FROM [dbo].[Order] WITH (UPDLOCK,HOLDLOCK) WHERE [OrderID]=@p0 AND [CustomerID]=@p1",
                         id, customer.CustomerID).SingleOrDefault();
@@ -136,6 +204,7 @@ namespace LTW_25DH110785.Controllers
                             line.Quantity, line.ProductID);
                     }
                     order.OrderStatus = "Cancelled";
+                    // Cancellation never erases a payment record or triggers a bank refund.
                     db.SaveChanges();
                     tx.Commit();
                     TempData["Success"] = order.PaymentStatus == "Paid"
@@ -174,6 +243,7 @@ namespace LTW_25DH110785.Controllers
         protected override void Dispose(bool disposing) { if(disposing) db.Dispose(); base.Dispose(disposing); }
     }
 
+    // Pure IQueryable helpers keep filtering in SQL and allow focused query tests.
     public static class OrderHistoryQuery
     {
         public const int SearchLimit = 200;

@@ -6,6 +6,56 @@ namespace LTW_25DH110785.Services
 {
     public static class CartRules
     {
+        public static bool TryBuildReorder(Dictionary<int, int> current, IEnumerable<OrderDetail> lines,
+            out Dictionary<int, int> updated, out string message)
+        {
+            updated = null;
+            message = "Giỏ hàng hiện tại không hợp lệ. Vui lòng kiểm tra giỏ hàng trước khi mua lại.";
+            if (current == null || current.Count > 50) return false;
+            foreach (var entry in current)
+            {
+                if (entry.Key <= 0 || entry.Value < 1 || entry.Value > 99) return false;
+            }
+
+            message = "Đơn hàng không có sản phẩm hợp lệ để mua lại.";
+            if (lines == null) return false;
+            var staged = new Dictionary<int, int>(current);
+            bool hasLine = false;
+            foreach (var line in lines)
+            {
+                hasLine = true;
+                var name = line != null && line.Product != null && !string.IsNullOrWhiteSpace(line.Product.ProductName)
+                    ? line.Product.ProductName : line != null ? "sản phẩm #" + line.ProductID : "sản phẩm trong đơn";
+                if (line == null || line.ProductID <= 0 || line.Product == null || line.Product.ProductID != line.ProductID)
+                {
+                    message = "Không thể mua lại " + name + ": dữ liệu sản phẩm không còn hợp lệ.";
+                    return false;
+                }
+                string itemMessage;
+                if (!TryAdd(staged, line.Product, line.Quantity, out itemMessage))
+                {
+                    message = "Không thể mua lại " + name + ": " + itemMessage;
+                    return false;
+                }
+            }
+            if (!hasLine) return false;
+
+            // Only expose the copy after every stored line has passed current stock and cart limits.
+            updated = staged;
+            message = "Đã thêm toàn bộ sản phẩm của đơn hàng vào giỏ hàng theo số lượng đã mua.";
+            return true;
+        }
+
+        public static bool TryNormalizeReorderKey(string raw, out string key)
+        {
+            key = null;
+            Guid parsed;
+            if (raw == null || raw.Length != 32 || !Guid.TryParseExact(raw, "N", out parsed) || parsed == Guid.Empty)
+                return false;
+            key = parsed.ToString("N");
+            return true;
+        }
+
         public static bool TryUpdate(Dictionary<int, int> cart, int productId, Product product, int quantity, out string message)
         {
             if (cart == null) throw new ArgumentNullException("cart");

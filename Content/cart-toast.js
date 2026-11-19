@@ -188,6 +188,18 @@
           }
           updateCartCount(data.cartCount);
           if (data.success) {
+            if (submission.isReorder) {
+              var cartLink = submission.form.querySelector("[data-reorder-cart-link]");
+              var button = submission.form.querySelector("button[type='submit']");
+              if (button && cartLink) {
+                button.hidden = true;
+                cartLink.hidden = false;
+                submission.form.setAttribute("data-reorder-added", "true");
+                if (submission.restoreFocus && !submission.focusMoved) {
+                  cartLink.focus({ preventScroll: true });
+                }
+              }
+            }
             showToast(
               "success",
               data.message.trim() || "Đã thêm sản phẩm vào giỏ hàng.",
@@ -198,7 +210,7 @@
               "error",
               data.message.trim() ||
                 "Chưa thể thêm sản phẩm. Vui lòng kiểm tra giỏ hàng và thử lại.",
-              "Chưa thể thêm sản phẩm",
+              submission.isReorder ? "Chưa thể mua lại cả đơn" : "Chưa thể thêm sản phẩm",
             );
           }
         });
@@ -228,12 +240,9 @@
   document.addEventListener("submit", function (event) {
     if (event.defaultPrevented) return;
     var form = event.target;
-    if (
-      !form ||
-      form.tagName !== "FORM" ||
-      (!form.classList.contains("add-form") &&
-        !form.classList.contains("detail-buy"))
-    ) {
+    if (!form || form.tagName !== "FORM") return;
+    var isReorder = form.classList.contains("reorder-form");
+    if (!isReorder && !form.classList.contains("add-form") && !form.classList.contains("detail-buy")) {
       return;
     }
 
@@ -248,14 +257,12 @@
     } catch (ignore) {
       return;
     }
-    if (
-      target.origin !== window.location.origin ||
-      !/\/cart\/add\/?$/i.test(target.pathname)
-    ) {
+    var expectedPath = isReorder ? /\/order\/reorder(?:\/\d+)?\/?$/i : /\/cart\/add\/?$/i;
+    if (target.origin !== window.location.origin || !expectedPath.test(target.pathname)) {
       return;
     }
 
-    if (form.getAttribute("data-cart-toast-pending") === "true") {
+    if (form.getAttribute("data-cart-toast-pending") === "true" || form.hasAttribute("data-reorder-added")) {
       event.preventDefault();
       return;
     }
@@ -290,6 +297,7 @@
     });
     var submission = {
       form: form,
+      isReorder: isReorder,
       url: target.href,
       body: body,
       buttons: buttons,

@@ -7,7 +7,7 @@
     var selectedCount = selectedTab == null ? Model.MatchedCount : selectedTab.Count;
 }
 <div class="container page-space my-orders-page">
-    <div class="my-orders-heading"><span class="eyebrow">TÀI KHOẢN ANHKHOASTORE</span><h1>Đơn hàng của tôi</h1><p>Theo dõi đơn hàng, xem lại linh kiện và mua lại sản phẩm bạn cần.</p></div>
+    <div class="my-orders-heading"><span class="eyebrow">TÀI KHOẢN ANHKHOASTORE</span><h1>Đơn hàng của tôi</h1><p>Theo dõi đơn hàng, xem lại linh kiện và mua lại cả đơn khi cần.</p></div>
     <nav class="my-orders-account-tabs" aria-label="Tài khoản"><a href="@Url.Action("Profile", "Account", new { area = "" })">Hồ sơ</a><a href="@Url.Action("ChangePassword", "Account", new { area = "" })">Đổi mật khẩu</a><a class="is-active" href="@Url.Action("History", "Order", new { area = "" })" aria-current="page">Đơn hàng của tôi</a></nav>
     <div class="my-orders-toolbar">
         @using (Html.BeginForm("History", "Order", new { area = "" }, FormMethod.Get, new { @class = "my-orders-search", role = "search" }))
@@ -70,14 +70,6 @@
                                             <div class="my-orders-product-image"><img src="@Url.Content(imageUrl)" alt="@productName" loading="lazy" /></div>
                                             <div class="my-orders-product-copy"><h3>@productName</h3><div class="my-orders-product-meta"><span>Đơn giá đã mua: <strong>@line.UnitPrice.ToString("N0", vi) ₫</strong></span><span>Số lượng: <strong>@line.Quantity</strong></span><span>Thành tiền: <strong>@((line.UnitPrice * line.Quantity).ToString("N0", vi)) ₫</strong></span></div></div>
                                             <div class="my-orders-product-actions">
-                                                @using (Html.BeginForm("Add", "Cart", new { area = "" }, FormMethod.Post, new { @class = "add-form my-orders-buy-form" }))
-                                                {
-                                                    @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="productId" value="@line.ProductID" />
-                                                    <input type="hidden" name="quantity" value="1" />
-                                                    <input type="hidden" name="returnUrl" value="@Request.RawUrl" />
-                                                    <button class="my-orders-buy-button" type="submit" disabled="@(!canBuy ? "disabled" : null)" aria-label="Mua lại @productName">Mua lại</button>
-                                                }
                                                 @if (activeProduct)
                                                 {
                                                     <a class="my-orders-product-detail" href="@Url.Action("Details", "Home", new { area = "", id = line.ProductID })">Xem chi tiết sản phẩm ↗</a>
@@ -98,6 +90,14 @@
                                     <div class="my-orders-payment"><p>@Html.Partial("_PaymentMethod", order.PaymentMethod)</p><p>@Html.Partial("_PaymentStatus", order.PaymentStatus)</p></div>
                                     <div class="my-orders-total"><span>Tổng tiền đơn hàng</span><strong>@order.TotalAmount.ToString("N0", vi) ₫</strong></div>
                                     <div class="my-orders-order-actions"><a class="my-orders-detail-link" href="@Url.Action("Details", "Order", new { area = "", id = order.OrderID })">Xem chi tiết đơn hàng</a>
+                                        @using (Html.BeginForm("Reorder", "Order", new { area = "", id = order.OrderID }, FormMethod.Post, new { @class = "reorder-form my-orders-reorder-form" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="returnUrl" value="@Request.RawUrl" />
+                                            <input type="hidden" name="requestKey" value="@Guid.NewGuid().ToString("N")" />
+                                            <button class="my-orders-buy-button" type="submit" aria-label="Mua lại cả đơn NX-@order.OrderID.ToString("D6")">Mua lại</button>
+                                            <a class="my-orders-buy-button" data-reorder-cart-link hidden href="@Url.Action("Index", "Cart", new { area = "" })">Xem giỏ hàng</a>
+                                        }
                                         @if (canCancel)
                                         {
                                             using (Html.BeginForm("Cancel", "Order", new { area = "" }, FormMethod.Post, new { @class = "my-orders-cancel-form", onsubmit = cancelAction }))

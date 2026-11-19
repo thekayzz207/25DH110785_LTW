@@ -4,6 +4,9 @@
     bool isBankTransfer = Model.PaymentMethod == "BankTransfer";
     bool isCod = Model.PaymentMethod == "COD";
     bool isPaid = Model.PaymentStatus == "Paid";
+    bool isRefunded = Model.PaymentStatus == "Refunded";
+    bool canConfirmRefund = LTW_25DH110785.Services.PaymentRules.CanConfirmRefund(Model);
+    var refundConfirmAction = "return window.confirm('Tôi đã hoàn đủ " + Model.TotalAmount.ToString("N0") + " đồng cho khách hàng của đơn này. Xác nhận ghi nhận đã hoàn tiền?');";
     bool isCancelled = Model.OrderStatus == "Cancelled";
     bool canChangeStatus = LTW_25DH110785.Services.PaymentRules.CanChangeStatus(Model, "Processing")
         || LTW_25DH110785.Services.PaymentRules.CanChangeStatus(Model, "Shipping")
@@ -19,12 +22,24 @@
     </div>
     <a class="button secondary" href="@Url.Action("Index", "Orders", new { area = "Admin", customerId = Model.CustomerID })">← Đơn của khách hàng</a>
 </div>
-@if (isCancelled && isPaid)
+@if (isRefunded)
 {
-    <div class="notice error" role="alert">
-        <strong>Đơn hàng đã hủy nhưng đã nhận tiền. Cần kiểm tra và xử lý hoàn tiền cho khách hàng.</strong>
-        <p>Hệ thống giữ nguyên trạng thái đã thanh toán để đối soát và không tự động hoàn tiền. Liên hệ khách hàng, thực hiện hoàn tiền qua ngân hàng hoặc phương thức phù hợp và lưu chứng từ.</p>
-    </div>
+    <section class="notice success" id="refund-status" role="status">
+        <strong>Đã hoàn tiền</strong>
+        <p>Đã ghi nhận hoàn đủ @Model.TotalAmount.ToString("N0") ₫ cho khách hàng của đơn này.</p>
+    </section>
+}
+else if (canConfirmRefund)
+{
+    <section class="panel padded" id="refund-status">
+        <h2>Hoàn tiền đơn hàng</h2>
+        <p>Đơn đã hủy và đã thanh toán <strong>@Model.TotalAmount.ToString("N0") ₫</strong>. Sau khi hoàn đủ tiền cho khách hàng, bạn có thể ghi nhận hoàn tiền tại đây.</p>
+        @using (Html.BeginForm("ConfirmRefund", "Orders", new { area = "Admin", id = Model.OrderID }, FormMethod.Post, new { onsubmit = refundConfirmAction }))
+        {
+            @Html.AntiForgeryToken()
+            <button class="button primary" type="submit">Đánh dấu đã hoàn tiền</button>
+        }
+    </section>
 }
 <div class="detail-grid">
     <section class="panel padded">
@@ -34,12 +49,12 @@
             <div><dt>Điện thoại</dt><dd>@(Model.Customer != null ? Model.Customer.CustomerPhone : "—")</dd></div>
             <div><dt>Địa chỉ nhận hàng</dt><dd>@Model.AddressDelivery</dd></div>
             <div><dt>Phương thức</dt><dd>@PaymentMethodName(Model.PaymentMethod)</dd></div>
-            <div><dt>Thanh toán</dt><dd><span class="badge @(isPaid ? "good" : "")">@(isPaid ? "Đã thanh toán" : "Chưa thanh toán")</span></dd></div>
+            <div><dt>Thanh toán</dt><dd><span class="badge @((isPaid || isRefunded) ? "good" : "")">@PaymentStatusName(Model.PaymentStatus)</span></dd></div>
         </dl>
     </section>
     <section class="panel padded admin-orders-status-card">
         <h2>Cập nhật trạng thái</h2>
-        @if (isBankTransfer && !isPaid && !isCancelled)
+        @if (isBankTransfer && Model.PaymentStatus == "Unpaid" && !isCancelled)
         {
             <div class="notice error" role="status"><strong>Chờ xác minh tiền chuyển khoản.</strong><p>Chỉ chuyển sang xử lý, đang giao hoặc đã giao sau khi xác nhận đã thực nhận đủ tiền.</p></div>
         }
@@ -53,7 +68,7 @@
                 <p class="form-note">Với COD, xác nhận đã giao đồng thời ghi nhận đã thu tiền từ khách hàng.</p>
             }
         }
-        else if (isBankTransfer && !isPaid && Model.OrderStatus == "Shipping")
+        else if (isBankTransfer && Model.PaymentStatus == "Unpaid" && Model.OrderStatus == "Shipping")
         {
             <p class="muted">Đơn đang giao chưa được xác nhận tiền chuyển khoản. Hãy kiểm tra thực nhận và xác nhận thanh toán trước khi tiếp tục.</p>
         }
@@ -72,7 +87,11 @@
     <p class="form-note">Nội dung chuyển khoản để đối chiếu: <strong>@LTW_25DH110785.Services.PaymentRules.TransferReference(Model.OrderID)</strong></p>
     <section class="panel padded">
         <h2>Đối soát chuyển khoản ngân hàng</h2>
-        @if (!isPaid && !isCancelled)
+        @if (isRefunded)
+        {
+            <p><span class="badge good">Đã hoàn tiền</span> Đã ghi nhận hoàn đủ tiền cho khách hàng.</p>
+        }
+        else if (Model.PaymentStatus == "Unpaid" && !isCancelled)
         {
             <p>Trước khi xác nhận, quản trị viên phải kiểm tra tài khoản ngân hàng và đối chiếu đúng đơn hàng, nội dung chuyển khoản cùng số tiền thực nhận <strong>@Model.TotalAmount.ToString("N0") ₫</strong>.</p>
             <p class="form-note">Quét mã QR hoặc thông báo của khách hàng không thay thế việc đối chiếu số tiền thực nhận trên tài khoản ngân hàng.</p>
@@ -87,7 +106,7 @@
             <p><span class="badge good">Đã thanh toán</span> Đã xác nhận nhận đủ tiền chuyển khoản cho đơn hàng này.</p>
             if (isCancelled)
             {
-                <p class="form-note"><strong>Cần xử lý hoàn tiền riêng; hệ thống không tự động hoàn tiền khi hủy đơn.</strong></p>
+                <p class="form-note"><a href="#refund-status">Ghi nhận đã hoàn tiền sau khi hoàn đủ tiền cho khách hàng →</a></p>
             }
         }
         else
@@ -113,6 +132,16 @@
 </section>
 </div>
 @functions {
+    public string PaymentStatusName(string status)
+    {
+        switch (status)
+        {
+            case "Paid": return "Đã thanh toán";
+            case "Refunded": return "Đã hoàn tiền";
+            case "Unpaid": return "Chưa thanh toán";
+            default: return "Chưa xác định";
+        }
+    }
     public string PaymentMethodName(string method)
     {
         switch (method) { case "COD": return "Thanh toán khi nhận hàng (COD)"; case "BankTransfer": return "Chuyển khoản ngân hàng"; default: return "Chưa xác định"; }

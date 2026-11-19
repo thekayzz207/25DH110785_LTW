@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Quản lý đơn hàng";
     var vi = CultureInfo.GetCultureInfo("vi-VN");
-    var validPaymentFilter = Model.PaymentStatus == "all" || Model.PaymentStatus == "Paid" || Model.PaymentStatus == "Unpaid";
+    var validPaymentFilter = Model.PaymentStatus == "all" || Model.PaymentStatus == "Paid" || Model.PaymentStatus == "Unpaid" || Model.PaymentStatus == "Refunded";
     var hasFilters = Model.CustomerId.HasValue || !string.IsNullOrWhiteSpace(Model.Q) || !string.IsNullOrWhiteSpace(Model.OrderDate) || Model.PaymentStatus != "all";
 }
 <div class="admin-orders-page">
@@ -20,20 +20,20 @@
             <div class="admin-orders-filter-field admin-orders-filter-search"><label for="admin-orders-q">Khách hàng / mã đơn / số điện thoại</label><input id="admin-orders-q" type="search" name="q" value="@Model.Q" maxlength="200" placeholder="Nhập tên khách hàng, mã đơn hoặc số điện thoại" /></div>
             <div class="admin-orders-filter-field"><label for="admin-orders-payment">Trạng thái thanh toán</label><select id="admin-orders-payment" name="paymentStatus">
                 @if (!validPaymentFilter) { <option value="@Model.PaymentStatus" selected="selected">Giá trị không hợp lệ: @Model.PaymentStatus</option> }
-                <option value="all" selected="@(Model.PaymentStatus == "all" ? "selected" : null)">Tất cả</option><option value="Paid" selected="@(Model.PaymentStatus == "Paid" ? "selected" : null)">Đã thanh toán</option><option value="Unpaid" selected="@(Model.PaymentStatus == "Unpaid" ? "selected" : null)">Chưa thanh toán</option>
+                <option value="all" selected="@(Model.PaymentStatus == "all" ? "selected" : null)">Tất cả</option><option value="Paid" selected="@(Model.PaymentStatus == "Paid" ? "selected" : null)">Đã thanh toán</option><option value="Unpaid" selected="@(Model.PaymentStatus == "Unpaid" ? "selected" : null)">Chưa thanh toán</option><option value="Refunded" selected="@(Model.PaymentStatus == "Refunded" ? "selected" : null)">Đã hoàn tiền</option>
             </select></div>
-            <div class="admin-orders-filter-field"><label for="admin-orders-date">Ngày đặt hàng</label><input id="admin-orders-date" type="date" name="orderDate" value="@Model.OrderDate" aria-describedby="admin-orders-date-help" /><small id="admin-orders-date-help"></small>
+            <div class="admin-orders-filter-field"><label for="admin-orders-date">Ngày đặt hàng</label><input id="admin-orders-date" type="date" name="orderDate" value="@Model.OrderDate" aria-describedby="admin-orders-date-help" /><small id="admin-orders-date-help">Lọc đúng ngày tại Việt Nam (UTC+7), định dạng yyyy-MM-dd.</small>
                 @if (!string.IsNullOrWhiteSpace(Model.OrderDate) && !ViewData.ModelState.IsValid) { <small class="admin-orders-invalid-value">Giá trị ngày đang lọc: @Model.OrderDate</small> }
             </div>
             <div class="admin-orders-filter-field"><label for="admin-orders-sort">Sắp xếp</label><select id="admin-orders-sort" name="sort"><option value="newest" selected="@(Model.Sort == "newest" ? "selected" : null)">Mới nhất</option><option value="oldest" selected="@(Model.Sort == "oldest" ? "selected" : null)">Cũ nhất</option><option value="total_desc" selected="@(Model.Sort == "total_desc" ? "selected" : null)">Giá trị giảm dần</option><option value="total_asc" selected="@(Model.Sort == "total_asc" ? "selected" : null)">Giá trị tăng dần</option></select></div>
-            <div class="admin-orders-filter-actions"><button class="button primary" type="submit">Lọc đơn hàng</button><a class="button secondary" href="@Url.Action("Index", "Orders", new { area = "Admin", customerId = Model.CustomerId })">Xóa bộ lọc</a></div>
+            <div class="admin-orders-filter-actions"><button class="button primary" type="submit">Lọc đơn hàng</button><a class="button secondary" href="@Url.Action("Index", "Orders", new { area = "Admin", customerId = Model.CustomerId })">Xóa bộ lọc</a><span>15 đơn hàng / trang</span></div>
         </form>
     </section>
     <section class="panel admin-orders-list-panel">
         <div class="table-scroll"><table><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Ngày đặt (UTC+7)</th><th>Trạng thái đơn</th><th>Phương thức / Thanh toán</th><th class="right">Tổng tiền</th><th>Thao tác</th></tr></thead><tbody>
             @foreach (var order in Model.Items)
             {
-                <tr><td class="strong">NX-@order.OrderID.ToString("D6")</td><td><a class="admin-orders-customer-link" href="@Url.Action("Index", "Orders", new { area = "Admin", customerId = order.CustomerID, q = Model.Q, sort = Model.Sort, paymentStatus = Model.PaymentStatus, orderDate = Model.OrderDate })">@(order.Customer == null ? "Khách hàng #" + order.CustomerID : order.Customer.CustomerName)</a>@if (order.Customer != null) { <small class="cell-small">@order.Customer.CustomerPhone</small> }</td><td>@order.OrderDate.AddHours(7).ToString("dd/MM/yyyy HH:mm")</td><td><span class="badge @(order.OrderStatus == "Delivered" ? "good" : order.OrderStatus == "Cancelled" ? "danger" : "")">@StatusName(order.OrderStatus)</span></td><td>@PaymentMethodName(order.PaymentMethod)<small class="cell-small"><span class="badge @(order.PaymentStatus == "Paid" ? "good" : "")">@(order.PaymentStatus == "Paid" ? "Đã thanh toán" : "Chưa thanh toán")</span></small>@if (order.OrderStatus == "Cancelled" && order.PaymentStatus == "Paid") { <small class="cell-small admin-orders-refund-note">Cần xử lý hoàn tiền</small> }</td><td class="right strong">@order.TotalAmount.ToString("N0", vi) ₫</td><td><a class="button small secondary" href="@Url.Action("Details", "Orders", new { area = "Admin", id = order.OrderID })">Chi tiết →</a></td></tr>
+                <tr><td class="strong">NX-@order.OrderID.ToString("D6")</td><td><a class="admin-orders-customer-link" href="@Url.Action("Index", "Orders", new { area = "Admin", customerId = order.CustomerID, q = Model.Q, sort = Model.Sort, paymentStatus = Model.PaymentStatus, orderDate = Model.OrderDate })">@(order.Customer == null ? "Khách hàng #" + order.CustomerID : order.Customer.CustomerName)</a>@if (order.Customer != null) { <small class="cell-small">@order.Customer.CustomerPhone</small> }</td><td>@order.OrderDate.AddHours(7).ToString("dd/MM/yyyy HH:mm")</td><td><span class="badge @(order.OrderStatus == "Delivered" ? "good" : order.OrderStatus == "Cancelled" ? "danger" : "")">@StatusName(order.OrderStatus)</span></td><td>@PaymentMethodName(order.PaymentMethod)<small class="cell-small"><span class="badge @((order.PaymentStatus == "Paid" || order.PaymentStatus == "Refunded") ? "good" : "")">@PaymentStatusName(order.PaymentStatus)</span></small>@if (order.OrderStatus == "Cancelled" && order.PaymentStatus == "Paid") { <small class="cell-small admin-orders-refund-note">Cần xử lý hoàn tiền</small> }</td><td class="right strong">@order.TotalAmount.ToString("N0", vi) ₫</td><td><a class="button small secondary" href="@Url.Action("Details", "Orders", new { area = "Admin", id = order.OrderID })">Chi tiết →</a></td></tr>
             }
             @if (!Model.Items.Any())
             {
@@ -49,12 +49,22 @@
 </div>
 
 @functions {
+    public string PaymentStatusName(string status)
+    {
+        switch (status)
+        {
+            case "Paid": return "Đã thanh toán";
+            case "Refunded": return "Đã hoàn tiền";
+            case "Unpaid": return "Chưa thanh toán";
+            default: return "Chưa xác định";
+        }
+    }
     public string PaymentMethodName(string method)
     {
         switch (method) { case "COD": return "Thanh toán khi nhận hàng (COD)"; case "BankTransfer": return "Chuyển khoản ngân hàng"; default: return "Chưa xác định"; }
     }
     public string StatusName(string status)
     {
-        switch (status) { case "Pending": return "Chờ xác nhận"; case "Processing": return "Đang xử lý"; case "Shipping": return "Đang vận chuyển"; case "Delivered": return "Đã giao"; case "Cancelled": return "Đã hủy"; default: return status; }
+        switch (status) { case "Pending": return "Chờ xác nhận"; case "Processing": return "Đang xử lý"; case "Shipping": return "Đang giao"; case "Delivered": return "Đã giao"; case "Cancelled": return "Đã hủy"; default: return status; }
     }
 }

@@ -1,2 +1,13 @@
 ﻿@model string
-@(Model == "Paid" ? "Đã thanh toán" : "Chưa thanh toán")
+@if (Model == "Refunded")
+{
+    @:Đã hoàn tiền
+}
+else if (Model == "Paid")
+{
+    @:Đã thanh toán
+}
+else
+{
+    @:Chưa thanh toán
+}

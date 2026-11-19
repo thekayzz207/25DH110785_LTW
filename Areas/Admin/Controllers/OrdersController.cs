@@ -20,7 +20,7 @@ namespace LTW_25DH110785.Areas.Admin.Controllers
             sort = AdminOrderQuery.NormalizeSort(sort);
             string normalizedPayment;
             var paymentValid = AdminOrderQuery.TryNormalizePaymentStatus(paymentStatus, out normalizedPayment);
-            if (!paymentValid) ModelState.AddModelError("paymentStatus", "Trạng thái thanh toán không hợp lệ. Vui lòng chọn Tất cả, Đã thanh toán hoặc Chưa thanh toán.");
+            if (!paymentValid) ModelState.AddModelError("paymentStatus", "Trạng thái thanh toán không hợp lệ. Vui lòng chọn Tất cả, Đã thanh toán, Chưa thanh toán hoặc Đã hoàn tiền.");
             orderDate = (orderDate ?? "").Trim();
             DateTime? startUtc, endUtc;
             var dateValid = AdminOrderQuery.TryDateRange(orderDate, out startUtc, out endUtc);
@@ -158,6 +158,46 @@ namespace LTW_25DH110785.Areas.Admin.Controllers
             }
             return RedirectToAction("Details", new { id });
         }
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult ConfirmRefund(int id)
+        {
+            try
+            {
+                using (var transaction = db.Database.BeginTransaction(IsolationLevel.Serializable))
+                {
+                    var order = db.Orders.SqlQuery(
+                        "SELECT * FROM [dbo].[Order] WITH (UPDLOCK,HOLDLOCK) WHERE [OrderID] = @p0",
+                        id).SingleOrDefault();
+                    if (order == null) return HttpNotFound();
+
+                    if (order.OrderStatus == "Cancelled" && order.PaymentStatus == "Refunded")
+                    {
+                        transaction.Commit();
+                        TempData["Success"] = "Đơn hàng đã được ghi nhận hoàn tiền trước đó.";
+                        return RedirectToAction("Details", new { id });
+                    }
+                    if (!PaymentRules.CanConfirmRefund(order))
+                    {
+                        TempData["Error"] = "Chỉ có thể ghi nhận đã hoàn tiền cho đơn đã hủy và đã thanh toán. Vui lòng tải lại để kiểm tra trạng thái.";
+                        return RedirectToAction("Details", new { id });
+                    }
+
+                    order.PaymentStatus = "Refunded";
+                    db.SaveChanges();
+                    transaction.Commit();
+                    TempData["Success"] = "Đã ghi nhận hoàn đủ tiền cho đơn hàng.";
+                }
+            }
+            catch (DbUpdateException)
+            {
+                TempData["Error"] = "Chưa lưu được trạng thái hoàn tiền. Vui lòng tải lại trang và kiểm tra cấu trúc database hỗ trợ trạng thái Đã hoàn tiền.";
+            }
+            catch (System.Data.SqlClient.SqlException)
+            {
+                TempData["Error"] = "Đơn hàng đang được cập nhật. Vui lòng tải lại để kiểm tra trước khi xác nhận hoàn tiền.";
+            }
+            return RedirectToAction("Details", new { id });
+        }
     }
 
     // Pure query helpers keep filters and paging server-side and can be tested without MVC/EF.
@@ -192,6 +232,8 @@ namespace LTW_25DH110785.Areas.Admin.Controllers
             { normalized = "Paid"; return true; }
             if (string.Equals(value, "Unpaid", StringComparison.OrdinalIgnoreCase))
             { normalized = "Unpaid"; return true; }
+            if (string.Equals(value, "Refunded", StringComparison.OrdinalIgnoreCase))
+            { normalized = "Refunded"; return true; }
             normalized = value;
             return false;
         }

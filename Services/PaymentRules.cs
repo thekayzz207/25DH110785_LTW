@@ -23,7 +23,7 @@ namespace LTW_25DH110785.Services
 
         public static bool CanChangeStatus(Order order, string nextStatus)
         {
-            if (order == null || !IsSupportedMethod(order.PaymentMethod)) return false;
+            if (order == null || !IsSupportedMethod(order.PaymentMethod) || order.PaymentStatus == "Refunded") return false;
             bool allowed = (order.OrderStatus == "Pending" && (nextStatus == "Processing" || nextStatus == "Cancelled"))
                 || (order.OrderStatus == "Processing" && (nextStatus == "Shipping" || nextStatus == "Cancelled"))
                 || (order.OrderStatus == "Shipping" && nextStatus == "Delivered");
@@ -46,6 +46,12 @@ namespace LTW_25DH110785.Services
         {
             return order != null && order.OrderStatus == "Pending" && IsSupportedMethod(order.PaymentMethod)
                 && (order.PaymentStatus == "Unpaid" || order.PaymentStatus == "Paid");
+        }
+
+        public static bool CanConfirmRefund(Order order)
+        {
+            return order != null && order.OrderStatus == "Cancelled" && order.PaymentStatus == "Paid"
+                && IsSupportedMethod(order.PaymentMethod);
         }
 
         public static string TransferReference(int orderId)

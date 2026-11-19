@@ -5,20 +5,24 @@
     var candidateStatuses = new[] { "Processing", "Shipping", "Delivered", "Cancelled" };
     var eligibleStatuses = candidateStatuses.Where(s => PaymentRules.CanChangeStatus(Model, s)).ToList();
     var isCod = Model.PaymentMethod == "COD";
-    var unpaidBank = Model.PaymentMethod == "BankTransfer" && Model.PaymentStatus != "Paid" && Model.OrderStatus != "Cancelled";
+    var unpaidBank = Model.PaymentMethod == "BankTransfer" && Model.PaymentStatus == "Unpaid" && Model.OrderStatus != "Cancelled";
 }
 <div class="admin-orders-page admin-orders-update">
     <div class="page-heading"><div><p class="eyebrow">QUẢN LÝ ĐƠN HÀNG</p><h1>Cập nhật trạng thái<span>.</span></h1><p>Đơn NX-@Model.OrderID.ToString("D6")</p></div><a class="button secondary" href="@Url.Action("Details", "Orders", new { area = "Admin", id = Model.OrderID })">← Về chi tiết đơn hàng</a></div>
     <section class="panel padded admin-orders-update-panel">
         @Html.ValidationSummary(false, "Chưa thể cập nhật trạng thái.", new { @class = "admin-orders-validation" })
-        <h2>Trạng thái hiện tại</h2><dl class="info-list"><div><dt>Đơn hàng</dt><dd><strong>NX-@Model.OrderID.ToString("D6")</strong></dd></div><div><dt>Trạng thái</dt><dd><span class="badge @(Model.OrderStatus == "Delivered" ? "good" : Model.OrderStatus == "Cancelled" ? "danger" : "")">@StatusName(Model.OrderStatus)</span></dd></div><div><dt>Phương thức</dt><dd>@PaymentMethodName(Model.PaymentMethod)</dd></div><div><dt>Thanh toán</dt><dd>@(Model.PaymentStatus == "Paid" ? "Đã thanh toán" : "Chưa thanh toán")</dd></div></dl>
+        <h2>Trạng thái hiện tại</h2><dl class="info-list"><div><dt>Đơn hàng</dt><dd><strong>NX-@Model.OrderID.ToString("D6")</strong></dd></div><div><dt>Trạng thái</dt><dd><span class="badge @(Model.OrderStatus == "Delivered" ? "good" : Model.OrderStatus == "Cancelled" ? "danger" : "")">@StatusName(Model.OrderStatus)</span></dd></div><div><dt>Phương thức</dt><dd>@PaymentMethodName(Model.PaymentMethod)</dd></div><div><dt>Thanh toán</dt><dd>@PaymentStatusName(Model.PaymentStatus)</dd></div></dl>
         @if (unpaidBank)
         {
             <div class="notice error admin-orders-status-notice" role="status"><strong>Chờ xác minh tiền chuyển khoản.</strong><p>Chỉ chuyển sang xử lý, đang giao hoặc đã giao sau khi xác nhận đã thực nhận đủ tiền.</p><a class="admin-orders-inline-link" href="@Url.Action("Details", "Orders", new { area = "Admin", id = Model.OrderID })">Về chi tiết đơn để đối soát và xác nhận thanh toán →</a></div>
         }
-        @if (Model.OrderStatus == "Cancelled" && Model.PaymentStatus == "Paid")
+        @if (Model.PaymentStatus == "Refunded")
         {
-            <div class="notice error admin-orders-status-notice" role="alert"><strong>Đơn đã hủy và đã thanh toán.</strong><p>Cần đối chiếu và xử lý hoàn tiền riêng. Hệ thống giữ nguyên trạng thái thanh toán và không tự động hoàn tiền.</p></div>
+            <div class="notice success admin-orders-status-notice" role="status"><strong>Đã hoàn tiền.</strong><p>Đã ghi nhận hoàn đủ tiền cho khách hàng của đơn này.</p></div>
+        }
+        else if (PaymentRules.CanConfirmRefund(Model))
+        {
+            <div class="notice error admin-orders-status-notice" role="alert"><strong>Đơn đã hủy và đã thanh toán.</strong><p>Sau khi hoàn đủ tiền cho khách hàng, hãy ghi nhận tại trang chi tiết đơn hàng.</p><a class="admin-orders-inline-link" href="@(Url.Action("Details", "Orders", new { area = "Admin", id = Model.OrderID }) + "#refund-status")">Ghi nhận đã hoàn tiền →</a></div>
         }
         @if (eligibleStatuses.Any())
         {
@@ -52,6 +56,16 @@
 </div>
 
 @functions {
+    public string PaymentStatusName(string status)
+    {
+        switch (status)
+        {
+            case "Paid": return "Đã thanh toán";
+            case "Refunded": return "Đã hoàn tiền";
+            case "Unpaid": return "Chưa thanh toán";
+            default: return "Chưa xác định";
+        }
+    }
     public string PaymentMethodName(string method)
     {
         switch (method) { case "COD": return "Thanh toán khi nhận hàng (COD)"; case "BankTransfer": return "Chuyển khoản ngân hàng"; default: return "Chưa xác định"; }

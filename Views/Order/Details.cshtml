@@ -31,11 +31,24 @@
         <aside class="order-summary"><span class="eyebrow">GIAO HÀNG & THANH TOÁN</span><h2>Thông tin đơn hàng</h2><div class="order-address"><small>Người nhận</small><strong>@(Model.Customer == null ? "" : Model.Customer.CustomerName)</strong><p>@(Model.Customer == null ? "" : Model.Customer.CustomerPhone)</p><small>Địa chỉ giao hàng</small><p>@Model.AddressDelivery</p><small>Phương thức thanh toán</small><p>@Html.Partial("_PaymentMethod", Model.PaymentMethod)</p><small>Trạng thái thanh toán</small><p>@Html.Partial("_PaymentStatus", Model.PaymentStatus)</p></div><div class="summary-line summary-total"><span>Tổng cộng</span><strong>@Model.TotalAmount.ToString("N0", vi) ₫</strong></div><a class="button dark full" href="@Url.Action("History")">← Về lịch sử mua hàng</a></aside>
     </div>
 
-    @if (Model.PaymentMethod == "BankTransfer")
+    @if (Model.PaymentStatus == "Refunded")
+    {
+        <section class="payment-state payment-state-paid" role="status"><h2>Đã hoàn tiền</h2><p>Cửa hàng đã xác nhận hoàn đủ <strong>@Model.TotalAmount.ToString("N0", vi) ₫</strong> cho đơn NX-@Model.OrderID.ToString("D6").</p></section>
+    }
+    else if (Model.PaymentMethod == "BankTransfer")
     {
         if (Model.OrderStatus == "Cancelled")
         {
-            <section class="payment-state payment-state-neutral" role="status"><h2>Đơn hàng đã hủy</h2><p>Đơn hàng này không còn yêu cầu chuyển khoản. Nếu bạn đã gửi tiền, vui lòng liên hệ cửa hàng để được kiểm tra giao dịch.</p></section>
+            <section class="payment-state payment-state-neutral" role="status"><h2>Đơn hàng đã hủy</h2>
+                @if (Model.PaymentStatus == "Paid")
+                {
+                    <p>Cửa hàng đang xử lý hoàn tiền cho đơn hàng. Trạng thái sẽ được cập nhật sau khi hoàn tiền.</p>
+                }
+                else
+                {
+                    <p>Đơn hàng đã hủy. Nếu bạn đã gửi tiền, vui lòng liên hệ cửa hàng để đối chiếu giao dịch.</p>
+                }
+            </section>
         }
         else if (Model.PaymentStatus == "Paid")
         {
@@ -96,7 +109,7 @@
     {
         <section class="order-cancel-info"><h2>Cần hỗ trợ về đơn hàng?</h2><p>Đơn hàng đã chuyển sang bước xử lý hoặc giao hàng. Nếu cần điều chỉnh hay hủy, vui lòng liên hệ cửa hàng để kiểm tra khả năng hỗ trợ.</p></section>
     }
-    else if (Model.OrderStatus == "Cancelled" && Model.PaymentMethod != "BankTransfer")
+    else if (Model.OrderStatus == "Cancelled" && Model.PaymentMethod != "BankTransfer" && Model.PaymentStatus != "Refunded")
     {
         <section class="order-cancel-info" role="status"><h2>Đơn đã hủy</h2><p>Đơn hàng này đã được hủy.</p>
             @if (Model.PaymentStatus == "Paid")
